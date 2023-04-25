@@ -21,7 +21,7 @@ const zipcode = async function(req, res) {
   connection.query(`
     SELECT * 
     FROM Zipcode 
-    WHERE zipcode = '${req.params.zipcode}'
+    WHERE zipcode = ${req.params.zipcode}
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -43,7 +43,7 @@ const business = async function(req, res) {
       FROM Business B
       JOIN Business_Category BC ON B.id = BC.business_id
       JOIN Category C ON BC.category_id = C.id
-      WHERE B.zipcode = '${req.params.zipcode}'
+      WHERE B.zipcode = ${req.params.zipcode}
       GROUP BY B.id, B.name, B.address, B.review_stars, B.review_count
       ORDER BY B.name
       LIMIT ${pageSize}
@@ -63,7 +63,7 @@ const business = async function(req, res) {
       FROM Business B
       JOIN Business_Category BC ON B.id = BC.business_id
       JOIN Category C ON BC.category_id = C.id
-      WHERE B.zipcode = '${req.params.zipcode}'
+      WHERE B.zipcode = ${req.params.zipcode}
       GROUP BY B.id, B.name, B.address, B.review_stars, B.review_count
       ORDER BY B.name
       LIMIT ${pageSize}
@@ -133,15 +133,15 @@ const search = async function(req, res) {
     connection.query(`
       SELECT *
       FROM Zipcode
-      WHERE (median_home_value BETWEEN ${medianHomeValueHigh} AND ${medianHomeValueLow}) AND
-            (median_rent_value BETWEEN ${medianRentValueHigh} AND ${medianRentValueLow}) AND
-            (average_household_income BETWEEN ${averageHouseholdIncomedHigh} AND ${averagehouseholdIncomeLow}) AND
-            (age_under_18 BETWEEN ${ageUnder18High} AND ${ageUnder18Low}) AND
-            (age_range_20_34 BETWEEN ${ageRange20_34High} AND ${ageRange20_34Low}) AND
-            (age_range_35_64 BETWEEN ${ageRange35_64High} AND ${ageRange35_64Low}) AND
-            (age_over_65 BETWEEN ${ageOver65High} AND ${ageOver65Low}) AND
-            (bachelor_grad_rate BETWEEN ${bachelorGradRateHigh} AND ${bachelorGradRateLow}) AND
-            (hs_grad_rate BETWEEN ${hsGradRateHigh} AND ${hsGradRateLow})
+      WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
+            (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
+            (average_household_income < ${averageHouseholdIncomedHigh} AND average_household_income > ${averagehouseholdIncomeLow}) AND
+            (age_under_18 < ${ageUnder18High} AND age_under_18 > ${ageUnder18Low}) AND
+            (age_range_20_34 < ${ageRange20_34High} AND age_range_20_34 > ${ageRange20_34Low}) AND
+            (age_range_35_64 < ${ageRange35_64High} AND age_range_35_64 > ${ageRange35_64Low}) AND
+            (age_over_65 < ${ageOver65High} AND age_over_65 > ${ageOver65Low}) AND
+            (bachelor_grad_rate < ${bachelorGradRateHigh} AND bachelor_grad_rate > ${bachelorGradRateLow}) AND
+            (hs_grad_rate < ${hsGradRateHigh} AND hs_grad_rate > ${hsGradRateLow})
       ORDER BY zipcode
       LIMIT ${pageSize}
       OFFSET ${offset}
@@ -163,15 +163,20 @@ const top_business_zipcode = async function(req, res) {
 
   if (!page) {
     connection.query(`
-      SELECT B.zipcode, Z.city, Z.state, AVG(review_stars) AS avg_review_star, COUNT(*) AS num_business
-      FROM Business B
-      JOIN Zipcode Z ON B.zipcode = Z.zipcode
-      WHERE B.id IN
-        (SELECT business_id
-        FROM Business_Category BC
+      SELECT Z.zipcode,
+        Z.city,
+        Z.state,
+        AVG(B.review_stars) AS avg_review_star,
+        COUNT(*) AS num_business
+      FROM Zipcode Z
+      JOIN (
+        SELECT review_stars, zipcode
+        FROM Business b
+        JOIN Business_Category BC ON b.id = BC.business_id
         JOIN Category C ON BC.category_id = C.id
-        WHERE LOWER(C.name) LIKE '%${req.params.category}%')
-      GROUP BY B.zipcode, Z.city, Z.state
+        WHERE C.name = '${req.params.category}'
+      ) B ON Z.zipcode = B.zipcode
+      GROUP BY Z.zipcode, Z.city, Z.state
       ORDER BY avg_review_star DESC, num_business DESC
       LIMIT ${pageSize}
     `, (err, data) => {
@@ -186,15 +191,20 @@ const top_business_zipcode = async function(req, res) {
     const offset = (page - 1) * pageSize;
 
     connection.query(`
-      SELECT B.zipcode, Z.city, Z.state, AVG(review_stars) AS avg_review_star, COUNT(*) AS num_business
-      FROM Business B
-      JOIN Zipcode Z ON B.zipcode = Z.zipcode
-      WHERE B.id IN
-        (SELECT business_id
-        FROM Business_Category BC
+      SELECT Z.zipcode,
+        Z.city,
+        Z.state,
+        AVG(B.review_stars) AS avg_review_star,
+        COUNT(*) AS num_business
+      FROM Zipcode Z
+      JOIN (
+        SELECT review_stars, zipcode
+        FROM Business b
+        JOIN Business_Category BC ON b.id = BC.business_id
         JOIN Category C ON BC.category_id = C.id
-        WHERE LOWER(C.name) LIKE '%${req.params.category}%')
-      GROUP BY B.zipcode, Z.city, Z.state
+        WHERE C.name = '${req.params.category}'
+      ) B ON Z.zipcode = B.zipcode
+      GROUP BY Z.zipcode, Z.city, Z.state
       ORDER BY avg_review_star DESC, num_business DESC
       LIMIT ${pageSize}
       OFFSET ${offset}
@@ -240,13 +250,14 @@ const business_score = async function(req, res) {
       WITH bus_cat_review_star_quintile AS (
         SELECT quintile, MIN(review_stars) AS review_stars
         FROM (
-          SELECT zipcode, review_stars, NTILE(5) OVER w AS quintile
+          SELECT bus.zipcode, bus.review_stars, NTILE(5) OVER w AS quintile
           FROM Business bus
-          WHERE bus.id IN
-              (SELECT business_id
+          JOIN (
+              SELECT BC.business_id
               FROM Business_Category BC
               JOIN Category C ON BC.category_id = C.id
-              WHERE LOWER(C.name) LIKE '%${req.params.category}%')
+              WHERE C.name = '${req.params.category}'
+          ) relevant_businesses ON bus.id = relevant_businesses.business_id
           WINDOW w AS (ORDER BY review_stars)) a
         GROUP BY quintile
       ), bus_cat_count_quintile AS (
@@ -258,34 +269,36 @@ const business_score = async function(req, res) {
               FROM Business B
               JOIN Business_Category BC ON B.id = BC.business_id
               JOIN Category C ON BC.category_id = C.id
-              WHERE LOWER(C.name) LIKE '%${req.params.category}%'
-              GROUP BY zipcode) category_count
+              WHERE C.name = '${req.params.category}'
+              GROUP BY zipcode
+          ) category_count
           WINDOW w AS (ORDER BY zipcode_category_count)) a
         GROUP BY quintile
       )
       SELECT final.zipcode,
-            city,
-            state,
-            cat_avg_stars,
-            category_count,
-            review_score,
-            cat_count_score,
-            ROUND(((review_score * ${reviewWeight}) + (cat_count_score * ${countWeight})), 2) AS final_weighted_score
+        city,
+        state,
+        cat_avg_stars,
+        category_count,
+        review_score,
+        cat_count_score,
+        ROUND(((review_score * ${reviewWeight}) + (cat_count_score * ${countWeight})), 2) AS final_weighted_score
       FROM (
         SELECT zipcode,
-              cat_avg_stars,
-              category_count,
-              (SELECT MAX(quintile) FROM bus_cat_review_star_quintile WHERE cat_avg_stars >=  bus_cat_review_star_quintile.review_stars) AS review_score,
-              (SELECT MAX(quintile) FROM bus_cat_count_quintile WHERE category_count >= bus_cat_count_quintile.zipcode_bus_category_count) AS cat_count_score
+          cat_avg_stars,
+          category_count,
+          (SELECT MAX(quintile) FROM bus_cat_review_star_quintile WHERE cat_avg_stars >=  bus_cat_review_star_quintile.review_stars) AS review_score,
+          (SELECT MAX(quintile) FROM bus_cat_count_quintile WHERE category_count >= bus_cat_count_quintile.zipcode_bus_category_count) AS cat_count_score
         FROM (
           SELECT B.zipcode,
-                  AVG(B.review_stars) AS cat_avg_stars,
-                  COUNT(B.id) AS category_count
+            AVG(B.review_stars) AS cat_avg_stars,
+            COUNT(B.id) AS category_count
           FROM Business B
           JOIN Business_Category BC ON B.id = BC.business_id
           JOIN Category C ON BC.category_id = C.id
-          WHERE LOWER(C.name) LIKE '%${req.params.category}%'
-          GROUP BY zipcode) a) final
+          WHERE C.name = '${req.params.category}'
+          GROUP BY zipcode
+        ) a) final
       JOIN Zipcode ON Zipcode.zipcode = final.zipcode
       ORDER BY final_weighted_score DESC
       LIMIT ${pageSize}
@@ -304,13 +317,14 @@ const business_score = async function(req, res) {
       WITH bus_cat_review_star_quintile AS (
         SELECT quintile, MIN(review_stars) AS review_stars
         FROM (
-          SELECT zipcode, review_stars, NTILE(5) OVER w AS quintile
+          SELECT bus.zipcode, bus.review_stars, NTILE(5) OVER w AS quintile
           FROM Business bus
-          WHERE bus.id IN
-              (SELECT business_id
+          JOIN (
+              SELECT BC.business_id
               FROM Business_Category BC
               JOIN Category C ON BC.category_id = C.id
-              WHERE LOWER(C.name) LIKE '%${req.params.category}%')
+              WHERE C.name = '${req.params.category}'
+          ) relevant_businesses ON bus.id = relevant_businesses.business_id
           WINDOW w AS (ORDER BY review_stars)) a
         GROUP BY quintile
       ), bus_cat_count_quintile AS (
@@ -322,34 +336,36 @@ const business_score = async function(req, res) {
               FROM Business B
               JOIN Business_Category BC ON B.id = BC.business_id
               JOIN Category C ON BC.category_id = C.id
-              WHERE LOWER(C.name) LIKE '%${req.params.category}%'
-              GROUP BY zipcode) category_count
+              WHERE C.name = '${req.params.category}'
+              GROUP BY zipcode
+          ) category_count
           WINDOW w AS (ORDER BY zipcode_category_count)) a
         GROUP BY quintile
       )
       SELECT final.zipcode,
-            city,
-            state,
-            cat_avg_stars,
-            category_count,
-            review_score,
-            cat_count_score,
-            ROUND(((review_score * ${reviewWeight}) + (cat_count_score * ${countWeight})), 2) AS final_weighted_score
+        city,
+        state,
+        cat_avg_stars,
+        category_count,
+        review_score,
+        cat_count_score,
+        ROUND(((review_score * ${reviewWeight}) + (cat_count_score * ${countWeight})), 2) AS final_weighted_score
       FROM (
         SELECT zipcode,
-              cat_avg_stars,
-              category_count,
-              (SELECT MAX(quintile) FROM bus_cat_review_star_quintile WHERE cat_avg_stars >=  bus_cat_review_star_quintile.review_stars) AS review_score,
-              (SELECT MAX(quintile) FROM bus_cat_count_quintile WHERE category_count >= bus_cat_count_quintile.zipcode_bus_category_count) AS cat_count_score
+          cat_avg_stars,
+          category_count,
+          (SELECT MAX(quintile) FROM bus_cat_review_star_quintile WHERE cat_avg_stars >=  bus_cat_review_star_quintile.review_stars) AS review_score,
+          (SELECT MAX(quintile) FROM bus_cat_count_quintile WHERE category_count >= bus_cat_count_quintile.zipcode_bus_category_count) AS cat_count_score
         FROM (
           SELECT B.zipcode,
-                  AVG(B.review_stars) AS cat_avg_stars,
-                  COUNT(B.id) AS category_count
+            AVG(B.review_stars) AS cat_avg_stars,
+            COUNT(B.id) AS category_count
           FROM Business B
           JOIN Business_Category BC ON B.id = BC.business_id
           JOIN Category C ON BC.category_id = C.id
-          WHERE LOWER(C.name) LIKE '%${req.params.category}%'
-          GROUP BY zipcode) a) final
+          WHERE C.name = '${req.params.category}'
+          GROUP BY zipcode
+        ) a) final
       JOIN Zipcode ON Zipcode.zipcode = final.zipcode
       ORDER BY final_weighted_score DESC
       LIMIT ${pageSize}
