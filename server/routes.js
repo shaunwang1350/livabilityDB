@@ -12,156 +12,283 @@ const connection = mysql.createConnection({
 });
 connection.connect((err) => err && console.log(err));
 
+/***************
+ * CORE ROUTES *
+ ***************/
+
+// Route 1: GET /zipcode/:zipcode
+const zipcode = async function(req, res) {
+  connection.query(`
+    SELECT * 
+    FROM Zipcode 
+    WHERE zipcode = '${req.params.zipcode}'
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data[0]);
+    }
+  });
+}
+
+// Route 2: GET /business/:zipcode
+const business = async function(req, res) {
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 10;
+
+  if (!page) {
+    connection.query(`
+      SELECT B.id, B.name, B.address, B.review_stars, B.review_count, GROUP_CONCAT(C.name ORDER BY C.name SEPARATOR ', ') AS business_category_list
+      FROM Business B
+      JOIN Business_Category BC ON B.id = BC.business_id
+      JOIN Category C ON BC.category_id = C.id
+      WHERE B.zipcode = '${req.params.zipcode}'
+      GROUP BY B.id, B.name, B.address, B.review_stars, B.review_count
+      ORDER BY B.name
+      LIMIT ${pageSize}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    });
+  } else {
+    const offset = (page - 1) * pageSize;
+
+    connection.query(`
+      SELECT B.id, B.name, B.address, B.review_stars, B.review_count, GROUP_CONCAT(C.name ORDER BY C.name SEPARATOR ', ') AS business_category_list
+      FROM Business B
+      JOIN Business_Category BC ON B.id = BC.business_id
+      JOIN Category C ON BC.category_id = C.id
+      WHERE B.zipcode = '${req.params.zipcode}'
+      GROUP BY B.id, B.name, B.address, B.review_stars, B.review_count
+      ORDER BY B.name
+      LIMIT ${pageSize}
+      OFFSET ${offset}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    });
+  }
+}
+
+// Route 3: GET /search
+const search = async function(req, res) {
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 10;
+
+  // Default parameters are determined by analyzing the data in the database
+  const medianHomeValueHigh = req.query.median_home_value_high ?? 2000000;
+  const medianHomeValueLow = req.query.median_home_value_low ?? 10000;
+  const medianRentValueHigh = req.query.median_rent_value_high ?? 3500;
+  const medianRentValueLow = req.query.median_rent_value_low ?? 100;
+  const averageHouseholdIncomedHigh = req.query.average_household_income_high ?? 250000;
+  const averagehouseholdIncomeLow = req.query.average_household_income_low ?? 2500;
+  const ageUnder18High = req.query.age_under_18_high ?? 100;
+  const ageUnder18Low = req.query.age_under_18_low ?? 0;
+  const ageRange20_34High = req.query.age_range_20_34_high ?? 100;
+  const ageRange20_34Low = req.query.age_range_20_34_low ?? 0;
+  const ageRange35_64High = req.query.age_range_35_64_high ?? 100;
+  const ageRange35_64Low = req.query.age_range_35_64_low ?? 0;
+  const ageOver65High = req.query.age_over_65_high ?? 100;
+  const ageOver65Low = req.query.age_over_65_low ?? 0;
+  const bachelorGradRateHigh = req.query.bachelor_grad_rate_high ?? 100;
+  const bachelorGradRateLow = req.query.bachelor_grad_rate_low ?? 0;
+  const hsGradRateHigh = req.query.hs_grad_rate_high ?? 100;
+  const hsGradRateLow = req.query.hs_grad_rate_low ?? 0;
+
+  if (!page) {
+    connection.query(`
+      SELECT *
+      FROM Zipcode
+      WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
+            (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
+            (average_household_income < ${averageHouseholdIncomedHigh} AND average_household_income > ${averagehouseholdIncomeLow}) AND
+            (age_under_18 < ${ageUnder18High} AND age_under_18 > ${ageUnder18Low}) AND
+            (age_range_20_34 < ${ageRange20_34High} AND age_range_20_34 > ${ageRange20_34Low}) AND
+            (age_range_35_64 < ${ageRange35_64High} AND age_range_35_64 > ${ageRange35_64Low}) AND
+            (age_over_65 < ${ageOver65High} AND age_over_65 > ${ageOver65Low}) AND
+            (bachelor_grad_rate < ${bachelorGradRateHigh} AND bachelor_grad_rate > ${bachelorGradRateLow}) AND
+            (hs_grad_rate < ${hsGradRateHigh} AND hs_grad_rate > ${hsGradRateLow})
+      ORDER BY zipcode
+      LIMIT ${pageSize}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  } else {
+    const offset = (page - 1) * pageSize;
+
+    connection.query(`
+      SELECT *
+      FROM Zipcode
+      WHERE (median_home_value BETWEEN ${medianHomeValueHigh} AND ${medianHomeValueLow}) AND
+            (median_rent_value BETWEEN ${medianRentValueHigh} AND ${medianRentValueLow}) AND
+            (average_household_income BETWEEN ${averageHouseholdIncomedHigh} AND ${averagehouseholdIncomeLow}) AND
+            (age_under_18 BETWEEN ${ageUnder18High} AND ${ageUnder18Low}) AND
+            (age_range_20_34 BETWEEN ${ageRange20_34High} AND ${ageRange20_34Low}) AND
+            (age_range_35_64 BETWEEN ${ageRange35_64High} AND ${ageRange35_64Low}) AND
+            (age_over_65 BETWEEN ${ageOver65High} AND ${ageOver65Low}) AND
+            (bachelor_grad_rate BETWEEN ${bachelorGradRateHigh} AND ${bachelorGradRateLow}) AND
+            (hs_grad_rate BETWEEN ${hsGradRateHigh} AND ${hsGradRateLow})
+      ORDER BY zipcode
+      LIMIT ${pageSize}
+      OFFSET ${offset}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  }
+}
+
+// Route 4: GET /top_business_zipcode/:category
+const top_business_zipcode = async function(req, res) {
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 10;
+
+  if (!page) {
+    connection.query(`
+      SELECT B.zipcode, Z.city, Z.state, AVG(review_stars) AS avg_review_star, COUNT(*) AS num_business
+      FROM Business B
+      JOIN Zipcode Z ON B.zipcode = Z.zipcode
+      WHERE B.id IN
+        (SELECT business_id
+        FROM Business_Category BC
+        JOIN Category C ON BC.category_id = C.id
+        WHERE LOWER(C.name) LIKE '%${req.params.category}%')
+      GROUP BY B.zipcode, Z.city, Z.state
+      ORDER BY avg_review_star DESC, num_business DESC
+      LIMIT ${pageSize}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    });
+  } else {
+    const offset = (page - 1) * pageSize;
+
+    connection.query(`
+      SELECT B.zipcode, Z.city, Z.state, AVG(review_stars) AS avg_review_star, COUNT(*) AS num_business
+      FROM Business B
+      JOIN Zipcode Z ON B.zipcode = Z.zipcode
+      WHERE B.id IN
+        (SELECT business_id
+        FROM Business_Category BC
+        JOIN Category C ON BC.category_id = C.id
+        WHERE LOWER(C.name) LIKE '%${req.params.category}%')
+      GROUP BY B.zipcode, Z.city, Z.state
+      ORDER BY avg_review_star DESC, num_business DESC
+      LIMIT ${pageSize}
+      OFFSET ${offset}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    });
+  }
+}
+
+// Route 5: GET /us_statistics
+const us_statistics = async function(req, res) {
+  connection.query(`
+    SELECT * FROM US_Statistics;
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data[0]);
+    }
+  });
+}
+
 /******************
- * WARM UP ROUTES *
+ * SCORING ROUTES *
  ******************/
 
-// Route 1: GET /author/:type
-const author = async function(req, res) {
-  // TODO (TASK 1): replace the values of name and pennKey with your own
-  const name = 'Jack Chen';
-  const pennKey = 'chejac';
-
-  // checks the value of type the request parameters
-  // note that parameters are required and are specified in server.js in the endpoint by a colon (e.g. /author/:type)
-  if (req.params.type === 'name') {
-    // res.send returns data back to the requester via an HTTP response
-    res.send(`Created by ${name}`);
-  } else if (req.params.type === 'pennkey') {
-    // TODO (TASK 2): edit the else if condition to check if the request parameter is 'pennkey' and if so, send back response 'Created by [pennkey]'
-    res.send(`Created by ${pennKey}`);
-  } else {
-    // we can also send back an HTTP status code to indicate an improper request
-    res.status(400).send(`'${req.params.type}' is not a valid author type. Valid types are 'name' and 'pennkey'.`);
-  }
-}
-
-// Route 2: GET /random
-const random = async function(req, res) {
-  // you can use a ternary operator to check the value of request query values
-  // which can be particularly useful for setting the default value of queries
-  // note if users do not provide a value for the query it will be undefined, which is falsey
-  const explicit = req.query.explicit === 'true' ? 1 : 0;
-
-  // Here is a complete example of how to query the database in JavaScript.
-  // Only a small change (unrelated to querying) is required for TASK 3 in this route.
-  connection.query(`
-    SELECT *
-    FROM Songs
-    WHERE explicit <= ${explicit}
-    ORDER BY RAND()
-    LIMIT 1
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      // if there is an error for some reason, or if the query is empty (this should not be possible)
-      // print the error message and return an empty object instead
-      console.log(err);
-      res.json({});
-    } else {
-      // Here, we return results of the query as an object, keeping only relevant data
-      // being song_id and title which you will add. In this case, there is only one song
-      // so we just directly access the first element of the query results array (data)
-      // TODO (TASK 3): also return the song title in the response
-      res.json({
-        song_id: data[0].song_id,
-        title: data[0].title
-      });
-    }
-  });
-}
-
-/********************************
- * BASIC SONG/ALBUM INFO ROUTES *
- ********************************/
-
-// Route 3: GET /song/:song_id
-const song = async function(req, res) {
-  // TODO (TASK 4): implement a route that given a song_id, returns all information about the song
-  // Most of the code is already written for you, you just need to fill in the query
-  connection.query(`
-    SELECT *
-    FROM Songs
-    WHERE song_id = '${req.params.song_id}'
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json({});
-    } else {
-      res.json(data[0]);
-    }
-  });
-}
-
-// Route 4: GET /album/:album_id
-const album = async function(req, res) {
-  // TODO (TASK 5): implement a route that given a album_id, returns all information about the album
-  connection.query(`
-    SELECT *
-    FROM Albums
-    WHERE album_id = '${req.params.album_id}'
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json({});
-    } else {
-      res.json(data[0]);
-    }
-  });
-}
-
-// Route 5: GET /albums
-const albums = async function(req, res) {
-  // TODO (TASK 6): implement a route that returns all albums ordered by release date (descending)
-  // Note that in this case you will need to return multiple albums, so you will need to return an array of objects
-  connection.query(`
-    SELECT *
-    FROM Albums
-    ORDER BY release_date DESC
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json([]);
-    } else {
-      res.json(data);
-    }
-  });
-}
-
-// Route 6: GET /album_songs/:album_id
-const album_songs = async function(req, res) {
-  // TODO (TASK 7): implement a route that given an album_id, returns all songs on that album ordered by track number (ascending)
-  connection.query(`
-    SELECT S.song_id, S.title, S.number, S.duration, S.plays
-    FROM Albums A JOIN Songs S ON A.album_id = S.album_id
-    WHERE A.album_id = '${req.params.album_id}'
-    ORDER BY S.number
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json([]);
-    } else {
-      res.json(data);
-    }
-  });
-}
-
-/************************
- * ADVANCED INFO ROUTES *
- ************************/
-
-// Route 7: GET /top_songs
-const top_songs = async function(req, res) {
+// Route 6: GET /business_score/:category
+const business_score = async function(req, res) {
   const page = req.query.page;
-  // TODO (TASK 8): use the ternary (or nullish) operator to set the pageSize based on the query or default to 10
   const pageSize = req.query.page_size ?? 10;
 
+  const reviewWeight = req.query.score_weight ?? 0.5;
+  const countWeight = req.query.count_weight ?? 0.5;
+
   if (!page) {
-    // TODO (TASK 9)): query the database and return all songs ordered by number of plays (descending)
-    // Hint: you will need to use a JOIN to get the album title as well
     connection.query(`
-      SELECT S.song_id, S.title, A.album_id, A.title AS album, S.plays
-      FROM Songs S JOIN Albums A ON S.album_id = A.album_id
-      ORDER BY S.plays DESC
+      WITH bus_cat_review_star_quintile AS (
+        SELECT quintile, MIN(review_stars) AS review_stars
+        FROM (
+          SELECT zipcode, review_stars, NTILE(5) OVER w AS quintile
+          FROM Business bus
+          WHERE bus.id IN
+              (SELECT business_id
+              FROM Business_Category BC
+              JOIN Category C ON BC.category_id = C.id
+              WHERE LOWER(C.name) LIKE '%${req.params.category}%')
+          WINDOW w AS (ORDER BY review_stars)) a
+        GROUP BY quintile
+      ), bus_cat_count_quintile AS (
+        SELECT quintile, MIN(zipcode_category_count) AS zipcode_bus_category_count
+        FROM (
+          SELECT zipcode, zipcode_category_count, NTILE(5) OVER w AS quintile
+          FROM (
+              SELECT B.zipcode, COUNT(B.id) AS zipcode_category_count
+              FROM Business B
+              JOIN Business_Category BC ON B.id = BC.business_id
+              JOIN Category C ON BC.category_id = C.id
+              WHERE LOWER(C.name) LIKE '%${req.params.category}%'
+              GROUP BY zipcode) category_count
+          WINDOW w AS (ORDER BY zipcode_category_count)) a
+        GROUP BY quintile
+      )
+      SELECT final.zipcode,
+            city,
+            state,
+            cat_avg_stars,
+            category_count,
+            review_score,
+            cat_count_score,
+            ROUND(((review_score * ${reviewWeight}) + (cat_count_score * ${countWeight})), 2) AS final_weighted_score
+      FROM (
+        SELECT zipcode,
+              cat_avg_stars,
+              category_count,
+              (SELECT MAX(quintile) FROM bus_cat_review_star_quintile WHERE cat_avg_stars >=  bus_cat_review_star_quintile.review_stars) AS review_score,
+              (SELECT MAX(quintile) FROM bus_cat_count_quintile WHERE category_count >= bus_cat_count_quintile.zipcode_bus_category_count) AS cat_count_score
+        FROM (
+          SELECT B.zipcode,
+                  AVG(B.review_stars) AS cat_avg_stars,
+                  COUNT(B.id) AS category_count
+          FROM Business B
+          JOIN Business_Category BC ON B.id = BC.business_id
+          JOIN Category C ON BC.category_id = C.id
+          WHERE LOWER(C.name) LIKE '%${req.params.category}%'
+          GROUP BY zipcode) a) final
+      JOIN Zipcode ON Zipcode.zipcode = final.zipcode
+      ORDER BY final_weighted_score DESC
+      LIMIT ${pageSize}
     `, (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
@@ -171,14 +298,60 @@ const top_songs = async function(req, res) {
       }
     });
   } else {
-    // TODO (TASK 10): reimplement TASK 9 with pagination
-    // Hint: use LIMIT and OFFSET (see https://www.w3schools.com/php/php_mysql_select_limit.asp)
     const offset = (page - 1) * pageSize;
 
     connection.query(`
-      SELECT S.song_id, S.title, A.album_id, A.title AS album, S.plays
-      FROM Songs S JOIN Albums A ON S.album_id = A.album_id
-      ORDER BY S.plays DESC
+      WITH bus_cat_review_star_quintile AS (
+        SELECT quintile, MIN(review_stars) AS review_stars
+        FROM (
+          SELECT zipcode, review_stars, NTILE(5) OVER w AS quintile
+          FROM Business bus
+          WHERE bus.id IN
+              (SELECT business_id
+              FROM Business_Category BC
+              JOIN Category C ON BC.category_id = C.id
+              WHERE LOWER(C.name) LIKE '%${req.params.category}%')
+          WINDOW w AS (ORDER BY review_stars)) a
+        GROUP BY quintile
+      ), bus_cat_count_quintile AS (
+        SELECT quintile, MIN(zipcode_category_count) AS zipcode_bus_category_count
+        FROM (
+          SELECT zipcode, zipcode_category_count, NTILE(5) OVER w AS quintile
+          FROM (
+              SELECT B.zipcode, COUNT(B.id) AS zipcode_category_count
+              FROM Business B
+              JOIN Business_Category BC ON B.id = BC.business_id
+              JOIN Category C ON BC.category_id = C.id
+              WHERE LOWER(C.name) LIKE '%${req.params.category}%'
+              GROUP BY zipcode) category_count
+          WINDOW w AS (ORDER BY zipcode_category_count)) a
+        GROUP BY quintile
+      )
+      SELECT final.zipcode,
+            city,
+            state,
+            cat_avg_stars,
+            category_count,
+            review_score,
+            cat_count_score,
+            ROUND(((review_score * ${reviewWeight}) + (cat_count_score * ${countWeight})), 2) AS final_weighted_score
+      FROM (
+        SELECT zipcode,
+              cat_avg_stars,
+              category_count,
+              (SELECT MAX(quintile) FROM bus_cat_review_star_quintile WHERE cat_avg_stars >=  bus_cat_review_star_quintile.review_stars) AS review_score,
+              (SELECT MAX(quintile) FROM bus_cat_count_quintile WHERE category_count >= bus_cat_count_quintile.zipcode_bus_category_count) AS cat_count_score
+        FROM (
+          SELECT B.zipcode,
+                  AVG(B.review_stars) AS cat_avg_stars,
+                  COUNT(B.id) AS category_count
+          FROM Business B
+          JOIN Business_Category BC ON B.id = BC.business_id
+          JOIN Category C ON BC.category_id = C.id
+          WHERE LOWER(C.name) LIKE '%${req.params.category}%'
+          GROUP BY zipcode) a) final
+      JOIN Zipcode ON Zipcode.zipcode = final.zipcode
+      ORDER BY final_weighted_score DESC
       LIMIT ${pageSize}
       OFFSET ${offset}
     `, (err, data) => {
@@ -192,19 +365,42 @@ const top_songs = async function(req, res) {
   }
 }
 
-// Route 8: GET /top_albums
-const top_albums = async function(req, res) {
-  // TODO (TASK 11): return the top albums ordered by aggregate number of plays of all songs on the album (descending), with optional pagination (as in route 7)
-  // Hint: you will need to use a JOIN and aggregation to get the total plays of songs in an album
+// Route 7: GET /housing_score
+const housing_score = async function(req, res) {
   const page = req.query.page;
   const pageSize = req.query.page_size ?? 10;
 
+  const houseWeight = req.query.house_weight ?? 0.5;
+  const rentWeight = req.query.rent_weight ?? 0.5;
+  const homeValueHigh = req.home_value_high ?? true;
+  const rentValueHigh = req.rent_value_high ?? true;
+
   if (!page) {
     connection.query(`
-      SELECT A.album_id, A.title, SUM(S.plays) AS plays
-      FROM Albums A JOIN Songs S ON A.album_id = S.album_id
-      GROUP BY A.album_id, A.title
-      ORDER BY SUM(S.plays) DESC
+      SELECT zipcode,
+        city,
+        state,
+        median_home_value,
+        median_rent_value,
+        home_value_score,
+        rent_value_score,
+        ROUND((COALESCE(home_value_score * ${houseWeight}, 0) + COALESCE(rent_value_score * ${rentWeight}, 0)), 2) AS final_weighted_housing_score
+      FROM (
+        SELECT zipcode,
+          city,
+          state,
+          median_home_value,
+          median_rent_value,
+          (CASE WHEN ${homeValueHigh} THEN (SELECT MAX(quintile) FROM home_value_quintile WHERE median_home_value >= home_value)
+          ELSE (6 - (SELECT MAX(quintile) FROM home_value_quintile WHERE  median_home_value >= home_value))
+          END) AS home_value_score,
+          (CASE WHEN ${rentValueHigh} THEN (SELECT MAX(quintile) FROM rent_value_quintile WHERE  median_rent_value >= rent_value)
+          ELSE (6 - (SELECT MAX(quintile) FROM rent_value_quintile WHERE  median_rent_value >= rent_value))
+          END) AS rent_value_score
+        FROM Zipcode
+        WHERE (median_home_value IS NOT NULL OR median_rent_value IS NOT NULL)) a
+      ORDER BY final_weighted_housing_score DESC
+      LIMIT ${pageSize}
     `, (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
@@ -217,10 +413,29 @@ const top_albums = async function(req, res) {
     const offset = (page - 1) * pageSize;
 
     connection.query(`
-      SELECT A.album_id, A.title, SUM(S.plays) AS plays
-      FROM Albums A JOIN Songs S ON A.album_id = S.album_id
-      GROUP BY A.album_id, A.title
-      ORDER BY SUM(S.plays) DESC
+      SELECT zipcode,
+        city,
+        state,
+        median_home_value,
+        median_rent_value,
+        home_value_score,
+        rent_value_score,
+        ROUND((COALESCE(home_value_score * ${houseWeight}, 0) + COALESCE(rent_value_score * ${rentWeight}, 0)), 2) AS final_weighted_housing_score
+      FROM (
+        SELECT zipcode,
+          city,
+          state,
+          median_home_value,
+          median_rent_value,
+          (CASE WHEN ${homeValueHigh} THEN (SELECT MAX(quintile) FROM home_value_quintile WHERE median_home_value >= home_value)
+          ELSE (6 - (SELECT MAX(quintile) FROM home_value_quintile WHERE  median_home_value >= home_value))
+          END) AS home_value_score,
+          (CASE WHEN ${rentValueHigh} THEN (SELECT MAX(quintile) FROM rent_value_quintile WHERE  median_rent_value >= rent_value)
+          ELSE (6 - (SELECT MAX(quintile) FROM rent_value_quintile WHERE  median_rent_value >= rent_value))
+          END) AS rent_value_score
+        FROM Zipcode
+        WHERE (median_home_value IS NOT NULL OR median_rent_value IS NOT NULL)) a
+      ORDER BY final_weighted_housing_score DESC
       LIMIT ${pageSize}
       OFFSET ${offset}
     `, (err, data) => {
@@ -234,52 +449,210 @@ const top_albums = async function(req, res) {
   }
 }
 
-// Route 9: GET /search_albums
-const search_songs = async function(req, res) {
-  // TODO (TASK 12): return all songs that match the given search query with parameters defaulted to those specified in API spec ordered by title (ascending)
-  // Some default parameters have been provided for you, but you will need to fill in the rest
-  const title = req.query.title ?? '';
-  const durationLow = req.query.duration_low ?? 60;
-  const durationHigh = req.query.duration_high ?? 660;
-  const playsLow = req.query.plays_low ?? 0;
-  const playsHigh = req.query.plays_high ?? 1100000000;
-  const danceabilityLow = req.query.danceability_low ?? 0;
-  const danceabilityHigh = req.query.danceability_high ?? 1;
-  const energyLow = req.query.energy_low ?? 0;
-  const energyHigh = req.query.energy_high ?? 1;
-  const valenceLow = req.query.valence_low ?? 0;
-  const valenceHigh = req.query.valence_high ?? 1;
-  const explicit = req.query.explicit === 'true' ? 1 : 0;
+// Route 8: GET /economics_score
+const economics_score = async function(req, res) {
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 10;
 
-  connection.query(`
-    SELECT *
-    FROM Songs
-    WHERE (title LIKE '%${title}%') AND 
-      (explicit <= ${explicit}) AND 
-      (duration BETWEEN ${durationLow} AND ${durationHigh}) AND
-      (plays BETWEEN ${playsLow} AND ${playsHigh}) AND
-      (danceability BETWEEN ${danceabilityLow} AND ${danceabilityHigh}) AND
-      (energy BETWEEN ${energyLow} AND ${energyHigh}) AND
-      (valence BETWEEN ${valenceLow} AND ${valenceHigh})
-    ORDER BY title
-  `, (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json([]);
-    } else {
-      res.json(data);
-    }
-  });
+  const lFRateWeight = req.query.lf_rate_weight ?? 0.33;
+  const householdIncomeWeight = req.query.household_income_weight ?? 0.33;
+  const povertyRateWeight = req.query.poverty_rate_weight ?? 0.33;
+
+  if (!page) {
+    connection.query(`
+      SELECT zipcode,
+        city,
+        state,
+        labor_force_participation_rate,
+        average_household_income,
+        poverty_rate,
+        labor_force_score,
+        household_income_score,
+        poverty_rate_score,
+        ROUND((labor_force_score * ${lFRateWeight}) + (household_income_score * ${householdIncomeWeight}) + (poverty_rate_score * ${povertyRateWeight}), 2) AS final_economic_weighted_score
+      FROM (
+        SELECT zipcode,
+          city,
+          state,
+          labor_force_participation_rate,
+          average_household_income,
+          poverty_rate,
+          (SELECT MAX(quintile) FROM labor_force_quintile WHERE  labor_force_participation_rate >= labor_force_participation ) AS labor_force_score,
+          (SELECT MAX(quintile) FROM household_income_quintile WHERE  Zipcode.average_household_income >= household_income_quintile.average_household_income) AS household_income_score,
+          (6 - (SELECT MAX(quintile) FROM poverty_rate_quintile WHERE  Zipcode.poverty_rate >= poverty_rate_quintile.poverty_rate)) AS poverty_rate_score
+        FROM Zipcode
+        WHERE (labor_force_participation_rate IS NOT NULL AND average_household_income IS NOT NULL AND poverty_rate IS NOT NULL)) a
+      ORDER BY final_economic_weighted_score DESC
+      LIMIT ${pageSize}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  } else {
+    const offset = (page - 1) * pageSize;
+
+    connection.query(`
+      SELECT zipcode,
+        city,
+        state,
+        labor_force_participation_rate,
+        average_household_income,
+        poverty_rate,
+        labor_force_score,
+        household_income_score,
+        poverty_rate_score,
+        ROUND((labor_force_score * ${lFRateWeight}) + (household_income_score * ${householdIncomeWeight}) + (poverty_rate_score * ${povertyRateWeight}), 2) AS final_economic_weighted_score
+      FROM (
+        SELECT zipcode,
+          city,
+          state,
+          labor_force_participation_rate,
+          average_household_income,
+          poverty_rate,
+          (SELECT MAX(quintile) FROM labor_force_quintile WHERE  labor_force_participation_rate >= labor_force_participation ) AS labor_force_score,
+          (SELECT MAX(quintile) FROM household_income_quintile WHERE  Zipcode.average_household_income >= household_income_quintile.average_household_income) AS household_income_score,
+          (6 - (SELECT MAX(quintile) FROM poverty_rate_quintile WHERE  Zipcode.poverty_rate >= poverty_rate_quintile.poverty_rate)) AS poverty_rate_score
+        FROM Zipcode
+        WHERE (labor_force_participation_rate IS NOT NULL AND average_household_income IS NOT NULL AND poverty_rate IS NOT NULL)) a
+      ORDER BY final_economic_weighted_score DESC
+      LIMIT ${pageSize}
+      OFFSET ${offset}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  }
+}
+
+// Route 9: GET /socio_demographics_score
+const socio_demographics_score = async function(req, res) {
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 10;
+
+  const educationWeight = req.query.education_weight ?? 0.33;
+  const ageWeight = req.query.age_weight ?? 0.33;
+
+  const highEducationalAttainment = req.high_educational_attainment ?? 3;
+  const agePreference = req.high_age_preference ?? 2;
+  
+  if (!page) {
+    connection.query(`
+      SELECT zipcode,
+        city,
+        state,
+        education_rate,
+        age_range_rate,
+        education_score,
+        age_score,
+        ROUND((education_score * ${educationWeight}) + (age_score * ${ageWeight}), 2) AS final_weighted_socio_demographic_score
+      FROM (
+        SELECT zipcode,
+          city,
+          state,
+          (CASE
+            WHEN ${highEducationalAttainment} = 1 THEN bachelor_grad_rate
+            WHEN ${highEducationalAttainment} = 2 THEN hs_grad_rate
+            WHEN ${highEducationalAttainment} = 3 THEN combined_bachelor_hs_rate
+          END) AS education_rate,
+          (CASE
+            WHEN ${agePreference} = 1 THEN age_under_18
+            WHEN ${agePreference} = 2 THEN age_range_20_34
+            WHEN ${agePreference} = 3 THEN age_range_35_64
+            WHEN ${agePreference} = 4 THEN age_over_65
+          END) AS age_range_rate,
+          (CASE
+            WHEN ${highEducationalAttainment} = 1 THEN (SELECT MAX(quintile) FROM bachelor_grad_rate_quintile WHERE Zipcode.bachelor_grad_rate >= bachelor_grad_rate_quintile.bachelor_grad_rate )
+            WHEN ${highEducationalAttainment} = 2 THEN (SELECT MAX(quintile) FROM hs_grad_rate_quintile WHERE Zipcode.hs_grad_rate >= hs_grad_rate_quintile.hs_grad_rate)
+            WHEN ${highEducationalAttainment} = 3 THEN (SELECT MAX(quintile) FROM combined_bachelor_hs_rate_quintile WHERE Zipcode.combined_bachelor_hs_rate >= combined_bachelor_hs_rate_quintile.combined_bachelor_hs_rate)
+          END) AS education_score,
+          (CASE
+            WHEN ${agePreference} = 1 THEN (SELECT MAX(quintile) FROM age_under_18_quintile WHERE  Zipcode.age_under_18 >= age_under_18_quintile.age_under_18)
+            WHEN ${agePreference} = 2 THEN (SELECT MAX(quintile) FROM age_range_20_34_quintile WHERE  Zipcode.age_range_20_34 >= age_range_20_34_quintile.age_range_20_34)
+            WHEN ${agePreference} = 3 THEN (SELECT MAX(quintile) FROM age_range_35_64_quintile WHERE  Zipcode.age_range_35_64 >= age_range_35_64_quintile.age_range_35_64)
+            WHEN ${agePreference} = 4 THEN (SELECT MAX(quintile) FROM age_over_65_quintile WHERE  Zipcode.age_over_65 >= age_over_65_quintile.age_over_65)
+          END) AS age_score
+        FROM Zipcode) a
+      WHERE education_rate IS NOT NULL AND age_range_rate IS NOT NULL
+      ORDER BY final_weighted_socio_demographic_score DESC
+      LIMIT ${pageSize}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  } else {
+    const offset = (page - 1) * pageSize;
+
+    connection.query(`
+      SELECT zipcode,
+        city,
+        state,
+        education_rate,
+        age_range_rate,
+        education_score,
+        age_score,
+        ROUND((education_score * ${educationWeight}) + (age_score * ${ageWeight}), 2) AS final_weighted_socio_demographic_score
+      FROM (
+        SELECT zipcode,
+          city,
+          state,
+          (CASE
+            WHEN ${highEducationalAttainment} = 1 THEN bachelor_grad_rate
+            WHEN ${highEducationalAttainment} = 2 THEN hs_grad_rate
+            WHEN ${highEducationalAttainment} = 3 THEN combined_bachelor_hs_rate
+          END) AS education_rate,
+          (CASE
+            WHEN ${agePreference} = 1 THEN age_under_18
+            WHEN ${agePreference} = 2 THEN age_range_20_34
+            WHEN ${agePreference} = 3 THEN age_range_35_64
+            WHEN ${agePreference} = 4 THEN age_over_65
+          END) AS age_range_rate,
+          (CASE
+            WHEN ${highEducationalAttainment} = 1 THEN (SELECT MAX(quintile) FROM bachelor_grad_rate_quintile WHERE Zipcode.bachelor_grad_rate >= bachelor_grad_rate_quintile.bachelor_grad_rate )
+            WHEN ${highEducationalAttainment} = 2 THEN (SELECT MAX(quintile) FROM hs_grad_rate_quintile WHERE Zipcode.hs_grad_rate >= hs_grad_rate_quintile.hs_grad_rate)
+            WHEN ${highEducationalAttainment} = 3 THEN (SELECT MAX(quintile) FROM combined_bachelor_hs_rate_quintile WHERE Zipcode.combined_bachelor_hs_rate >= combined_bachelor_hs_rate_quintile.combined_bachelor_hs_rate)
+          END) AS education_score,
+          (CASE
+            WHEN ${agePreference} = 1 THEN (SELECT MAX(quintile) FROM age_under_18_quintile WHERE  Zipcode.age_under_18 >= age_under_18_quintile.age_under_18)
+            WHEN ${agePreference} = 2 THEN (SELECT MAX(quintile) FROM age_range_20_34_quintile WHERE  Zipcode.age_range_20_34 >= age_range_20_34_quintile.age_range_20_34)
+            WHEN ${agePreference} = 3 THEN (SELECT MAX(quintile) FROM age_range_35_64_quintile WHERE  Zipcode.age_range_35_64 >= age_range_35_64_quintile.age_range_35_64)
+            WHEN ${agePreference} = 4 THEN (SELECT MAX(quintile) FROM age_over_65_quintile WHERE  Zipcode.age_over_65 >= age_over_65_quintile.age_over_65)
+          END) AS age_score
+        FROM Zipcode) a
+      WHERE education_rate IS NOT NULL AND age_range_rate IS NOT NULL
+      ORDER BY final_weighted_socio_demographic_score DESC
+      LIMIT ${pageSize}
+      OFFSET ${offset}
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  }
 }
 
 module.exports = {
-  author,
-  random,
-  song,
-  album,
-  albums,
-  album_songs,
-  top_songs,
-  top_albums,
-  search_songs,
+  zipcode,
+  business,
+  search,
+  top_business_zipcode,
+  us_statistics,
+  business_score,
+  housing_score,
+  economics_score,
+  socio_demographics_score,
 }
