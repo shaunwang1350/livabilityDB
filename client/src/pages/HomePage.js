@@ -1,89 +1,48 @@
-import { useEffect, useState } from 'react';
-import { Container, Divider, Link } from '@mui/material';
-import { NavLink } from 'react-router-dom';
-
-import LazyTable from '../components/LazyTable';
-import SongCard from '../components/SongCard';
+import {Grid, Box, Button, Typography } from '@mui/material';
 const config = require('../config.json');
 
 export default function HomePage() {
-  // We use the setState hook to persist information across renders (such as the result of our API calls)
-  const [songOfTheDay, setSongOfTheDay] = useState({});
-  const [selectedSongId, setSelectedSongId] = useState(null);
-  // TODO (TASK 13): add a state variable to store the app author (default to '')
-  const [author, setAuthor] = useState('');
-
-  // The useEffect hook by default runs the provided callback after every render
-  // The second (optional) argument, [], is the dependency array which signals
-  // to the hook to only run the provided callback if the value of the dependency array
-  // changes from the previous render. In this case, an empty array means the callback
-  // will only run on the very first render.
-  useEffect(() => {
-    // Fetch request to get the song of the day. Fetch runs asynchronously.
-    // The .then() method is called when the fetch request is complete
-    // and proceeds to convert the result to a JSON which is finally placed in state.
-    fetch(`http://${config.server_host}:${config.server_port}/random`)
-      .then(res => res.json())
-      .then(resJson => setSongOfTheDay(resJson));
-
-    // TODO (TASK 14): add a fetch call to get the app author (name not pennkey) and store it in the state variable
-    fetch(`http://${config.server_host}:${config.server_port}/author/name`)
-      .then(res => res.text())
-      .then(resJson => setAuthor(resJson));
-  }, []);
-
-  // Here, we define the columns of the "Top Songs" table. The songColumns variable is an array (in order)
-  // of objects with each object representing a column. Each object has a "field" property representing
-  // what data field to display from the raw data, "headerName" property representing the column label,
-  // and an optional renderCell property which given a row returns a custom JSX element to display in the cell.
-  const songColumns = [
-    {
-      field: 'title',
-      headerName: 'Song Title',
-      renderCell: (row) => <Link onClick={() => setSelectedSongId(row.song_id)}>{row.title}</Link> // A Link component is used just for formatting purposes
-    },
-    {
-      field: 'album',
-      headerName: 'Album',
-      renderCell: (row) => <NavLink to={`/albums/${row.album_id}`}>{row.album}</NavLink> // A NavLink component is used to create a link to the album page
-    },
-    {
-      field: 'plays',
-      headerName: 'Plays'
-    },
-  ];
-
-  // TODO (TASK 15): define the columns for the top albums (schema is Album Title, Plays), where Album Title is a link to the album page
-  // Hint: this should be very similar to songColumns defined above, but has 2 columns instead of 3
-  const albumColumns = [
-    {
-      field: 'title',
-      headerName: 'Album Title',
-      renderCell: (row) => <NavLink to={`/albums/${row.album_id}`}>{row.title}</NavLink>
-    },
-    {
-      field: 'plays',
-      headerName: 'Plays'
-    },
-  ];
 
   return (
-    <Container>
-      {/* SongCard is a custom component that we made. selectedSongId && <SongCard .../> makes use of short-circuit logic to only render the SongCard if a non-null song is selected */}
-      {selectedSongId && <SongCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
-      <h2>Check out your song of the day:&nbsp;
-        <Link onClick={() => setSelectedSongId(songOfTheDay.song_id)}>{songOfTheDay.title}</Link>
-      </h2>
-      <Divider />
-      <h2>Top Songs</h2>
-      <LazyTable route={`http://${config.server_host}:${config.server_port}/top_songs`} columns={songColumns} />
-      <Divider />
-      {/* TODO (TASK 16): add a h2 heading, LazyTable, and divider for top albums. Set the LazyTable's props for defaultPageSize to 5 and rowsPerPageOptions to [5, 10] */}
-      <h2>Top Albums</h2>
-      <LazyTable route={`http://${config.server_host}:${config.server_port}/top_albums`} columns={albumColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10]}/>
-      <Divider />
-      {/* TODO (TASK 17): add a paragraph (<p>text</p>) that displays the value of your author state variable from TASK 13 */}
-      <p>{author}</p>
-    </Container>
+    // <Container>
+    //   <h2>Welcome to Zipcheck, (call to action)</h2>
+    //   <p> Zipcode Report helps you to generate reports that include displaying housing, demographics, and economic information for a given zipcode, displaying business information for a given zipcode, and searching for a zipcode based on specific livability parameters. </p>
+    //   <p> It can also find the top N zipcodes with the highest average review score and number of businesses for a specific business category, calculate the mean statistics of livability parameters across all US zip codes, and score zipcodes based on various factors such as home value/rent, age/education, economic indicators, and business review star/count.  </p>
+    //   <p> These functions help users evaluate and compare different areas based on relevant factors to make informed decisions. </p>
+    
+    //   <p>Created by Golden Meekats</p>
+    // </Container>
+
+    <Box ml={7} display="flex"
+    justifyContent="center"
+    alignItems="center"
+    minHeight="100vh">
+      <Grid container spacing={6} >
+        <Grid item xs={12} md={7}>
+
+          <Typography variant="h3" fontWeight={700} >
+          Welcome to Zipcheck, (call to action)
+          </Typography>
+
+          <Typography variant="h6" >
+          Zipcode Report helps you to generate reports that include displaying housing, demographics, and economic information for a given zipcode, displaying business information for a given zipcode, and searching for a zipcode based on specific livability parameters.
+          It can also find the top N zipcodes with the highest average review score and number of businesses for a specific business category, calculate the mean statistics of livability parameters across all US zip codes, and score zipcodes based on various factors such as home value/rent, age/education, economic indicators, and business review star/count. 
+          These functions help users evaluate and compare different areas based on relevant factors to make informed decisions.
+          </Typography>
+          
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ width: '200px', fontSize: '16px' }}
+          >
+            Search now
+          </Button>
+
+        </Grid>
+        <Grid item xs={12} md={5}>
+          <img alt="My Team"/>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
