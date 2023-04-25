@@ -1,6 +1,6 @@
 import {Grid, Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-const config = require('../config.json');
+import bgimg from '../images/bkvector.png';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -14,10 +14,10 @@ export default function HomePage() {
     alignItems="center"
     minHeight="100vh"
     >
-      <Grid container spacing={6}>
+      <Grid container spacing={8}>
         <Grid item xs={12} md={6}>
 
-          <Typography variant="h3" fontWeight={700} mb={4}>
+          <Typography variant="h3" fontWeight={800} mb={4}>
           Find out more than you know about your zipcode.
           </Typography>
 
@@ -38,9 +38,9 @@ export default function HomePage() {
           >
             Search now
           </Button>
-
-        </Grid>
-        <Grid item xs={12} md={6}>
+          </Grid>
+        <Grid item xs={12} md={4}>
+          <img src={bgimg} alt="My Team" width="600" style={{'border-radius' : '2%'}}/>
         </Grid>
       </Grid>
     </Box>

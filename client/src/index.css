@@ -1,7 +1,7 @@
 body {
-	background: linear-gradient(-45deg, #4a0101, #013d4a, #48014a, #234a01);
+	background: linear-gradient(-45deg, #1f1010, #48014a, #151c3d, #1f1015);
 	background-size: 400% 400%;
-	animation: gradient 40s ease infinite;
+	animation: gradient 20s ease infinite;
 	height: 100vh;
 }
 
@@ -16,8 +16,3 @@ body {
 		background-position: 0% 50%;
 	}
 }
-
-/* body {
-    background-image: url("./resource/milad-fakurian-Ycgxk1KN5FM-unsplash.jpg");
-    background-color: #cccccc;
-} */
