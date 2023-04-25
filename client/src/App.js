@@ -5,16 +5,18 @@ import { createTheme } from "@mui/material/styles";
 
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
-import AlbumsPage from './pages/AlbumsPage';
 import SongsPage from './pages/SongsPage';
 import AlbumInfoPage from './pages/AlbumInfoPage'
+import ZipcodeSearch from "./pages/zipcodeSearch";
 
 // createTheme enables you to customize the look and feel of your app past the default
 // in this case, we only change the color scheme
 export const theme = createTheme({
   palette: {
-    primary: indigo,
-    secondary: amber,
+    light: '#ffa726',
+    main: '#f57c00',
+    dark: '#ef6c00',
+    mode: 'dark',
   },
 });
 
@@ -30,7 +32,7 @@ export default function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/albums" element={<AlbumsPage />} />
+          <Route path="/zipcodeSearch" element={<ZipcodeSearch />} />
           <Route path="/albums/:album_id" element={<AlbumInfoPage />} />
           <Route path="/songs" element={<SongsPage />} />
         </Routes>
