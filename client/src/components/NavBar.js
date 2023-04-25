@@ -47,7 +47,7 @@ export default function NavBar() {
 
 
   return (
-    <AppBar position='static'>
+    <AppBar position='static' sx={{bgcolor: "transparent", boxShadow: 'none' }}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <NavText href='/' text='Zipcheck' isMain />
@@ -73,6 +73,15 @@ export default function NavBar() {
           <MenuItem onClick={() => handleClose('/businessZipCodeSearch')}>Search Business By Zipcode</MenuItem>
           <MenuItem onClick={() => handleClose('/parametersSearch')}>Search Zipcode by Livability Parameters</MenuItem>
         </Menu>
+        <Button
+          id="basic-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={() => handleClose('/statistics')}
+        >
+          U.S. Statistics
+        </Button>
         <Button
           id="basic-button"
           aria-controls={open ? 'basic-menu' : undefined}

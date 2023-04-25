@@ -3,8 +3,8 @@ import { Box, Button, ButtonGroup, Link, Modal } from '@mui/material';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 import { NavLink } from 'react-router-dom';
 
-import { formatDuration } from '../helpers/formatter';
-const config = require('../config.json');
+import { formatDuration } from '../../helpers/formatter';
+const config = require('../../config.json');
 
 // SongCard is a modal (a common example of a modal is a dialog window).
 // Typically, modals will conditionally appear (specified by the Modal's open property)
