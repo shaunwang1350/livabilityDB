@@ -2,8 +2,6 @@ import * as React from 'react';
 import { AppBar, Container, Toolbar, Typography, Button, Menu, MenuItem} from '@mui/material'
 import { NavLink, useNavigate } from 'react-router-dom';
 
-// The hyperlinks in the NavBar contain a lot of repeated formatting code so a
-// helper component NavText local to the file is defined to prevent repeated code.
 const NavText = ({ href, text, isMain }) => {
   return (
     <Typography
@@ -11,7 +9,7 @@ const NavText = ({ href, text, isMain }) => {
       noWrap
       style={{
         marginRight: '30px',
-        fontFamily: 'Helvetica, sans-serif',
+        fontFamily: 'Monaco, sans-serif',
         fontWeight: 700,
       }}
     >
@@ -28,9 +26,6 @@ const NavText = ({ href, text, isMain }) => {
   )
 }
 
-// Here, we define the NavBar. Note that we heavily leverage MUI components
-// to make the component look nice. Feel free to try changing the formatting
-// props to how it changes the look of the component.
 export default function NavBar() {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
