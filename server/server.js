@@ -15,10 +15,8 @@ app.get('/business/:zipcode', routes.business);
 app.get('/search', routes.search);
 app.get('/top_business_zipcode/:category', routes.top_business_zipcode);
 app.get('/us_statistics', routes.us_statistics);
-app.get('/business_score/:category', routes.business_score);
-app.get('/housing_score', routes.housing_score);
-app.get('/economics_score', routes.economics_score);
-app.get('/socio_demographics_score', routes.socio_demographics_score);
+app.get('/business_score/:zipcode/:category', routes.business_score);
+app.get('/housing_economics_demographics_score/:zipcode', routes.housing_economics_demographics_score);
 app.get('/business_category', routes.business_category);
 
 app.listen(config.server_port, () => {

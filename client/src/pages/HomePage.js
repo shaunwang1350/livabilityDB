@@ -7,6 +7,7 @@ import bgimg from '../images/bkvector.png';
 const config = require('../config.json');
 
 export default function HomePage() {
+  
   const navigate = useNavigate();
   const handleClick = (url) => {
     navigate(url);
