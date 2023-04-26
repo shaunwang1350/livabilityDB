@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Container, TextField, Box, Button } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Container, TextField, Box, Button, Typography, Divider, Autocomplete} from '@mui/material';
 const config = require('../config.json');
 
 export default function AnalysisPage() {
@@ -8,6 +8,8 @@ export default function AnalysisPage() {
   const [category, setCategory] = useState(null);
   const [businessScoreInfo, setBusinessScoreInfo] = useState(null);
   const [hedScoreInfo, setHedScoreInfo] = useState(null);
+
+  const [allCategories, setAllCategories] = useState([]);
 
   const [reviewWeight, setReviewWeight] = useState(0.5);
   const [countWeight, setCountWeight] = useState(0.5);
@@ -25,6 +27,8 @@ export default function AnalysisPage() {
   const [ageWeight, setAgeWeight] = useState(0.33);
   const [highEducationalAttainment, setHighEducationalAttainment] = useState(3);
   const [agePreference, setAgePreference] = useState(2);
+
+
 
 
   const businessScore = () => {
@@ -51,14 +55,38 @@ export default function AnalysisPage() {
     console.log(hedScoreInfo);
   };
 
+  const defaultProps = {
+    options: allCategories,
+    getOptionLabel: (option) => option.name,
+  };
+
+  useEffect(() => {
+    fetch(`http://${config.server_host}:${config.server_port}/business_category`)
+      .then(res => res.json())
+      .then(resJson => setAllCategories(resJson));
+  }, []);
+
+
   return (
     <Container>
       <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
-        <h2>Analyze a Zip Code by Finding the Weighted Quintile Score of the Zip Code's Livability Parameters</h2>
-        <p>Enter the following parameters and search:</p>
+        <Typography variant="h5" fontWeight={800} mb={2}>Analyze a Zip Code by Finding the Weighted Quintile Score of the Zip Code's Livability Parameters</Typography>
+        <Divider/>
+        <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
         <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setZipcode(e.target.value)}/>
         {/* Change TextField to Autocomplete component */}
-        <TextField id="outlined-basic" label="Category" variant="outlined" required inputProps={{maxLength: 99}} onChange={(e) => setCategory(e.target.value)}/>
+
+        <Autocomplete
+          {...defaultProps}
+          value = {category}
+          onInputChange={(event, newInputValue) => {
+            setCategory(newInputValue);
+            console.log(newInputValue);
+          }}
+          disablePortal
+          sx={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Business Categories"/>}
+        />
 
         <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
           <Button variant="outlined" onClick={() => {businessScore(); housingEconomicsDemographicsScore();}} sx={{ height: 40 }}> Search </Button>

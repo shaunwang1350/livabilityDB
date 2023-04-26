@@ -44,6 +44,7 @@ export default function RankingsPage() {
         <Typography variant="h5" fontWeight={800} mb={2}>Find all housing, demographics, and economic info for a particular zip code</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
+        
         <Autocomplete
           {...defaultProps}
           value = {category}
