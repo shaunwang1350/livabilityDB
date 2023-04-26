@@ -32,7 +32,9 @@ export default function RankingsPage() {
     console.log(category);
     fetch(`http://${config.server_host}:${config.server_port}/top_business_zipcode/${category}`)
       .then(res => res.json())
-      .then(resJson => setZipBusinessInfo(resJson), [category]);
+      .then(resJson => {
+        const zipBusinessInfo = resJson.map((info) => ({ id: info.zipcode, ...info })); 
+        setZipBusinessInfo(zipBusinessInfo)});
 
     console.log(zipBusinessInfo);
   };
@@ -41,7 +43,7 @@ export default function RankingsPage() {
     <Container>
 
       <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
-        <Typography variant="h5" fontWeight={800} mb={2}>Find all housing, demographics, and economic info for a particular zip code</Typography>
+        <Typography variant="h5" fontWeight={800} mb={2}>Find the top zip codes for a particular business category</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
         
@@ -64,11 +66,11 @@ export default function RankingsPage() {
 
       {zipBusinessInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
           <div style={{ height: 1000, width: '100%' }}>
-          <DataGrid
-            rows={zipBusinessInfo}
-            columns={columns}
-            paginationModel={{ page: 0, pageSize: 10 }}
-          />
+            <DataGrid
+              rows={zipBusinessInfo}
+              columns={columns}
+              paginationModel={{ page: 0, pageSize: 10 }}
+            />
           </div>
       </Box>}
 
