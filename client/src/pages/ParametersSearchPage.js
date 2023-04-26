@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Container, Box, Button, Typography, Divider, Grid, Slider} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 const config = require('../config.json');
+
+
+
 
 export default function ParametersSearchPage() {
 
@@ -102,141 +106,151 @@ export default function ParametersSearchPage() {
     { value: 100, label: '100%'},
   ];
 
+  const columns = [
+    { field: 'zipcode', headerName: 'Zipcode', width: 220 },
+    { field: 'state', headerName: 'State', width: 200 },
+    { field: 'city', headerName: 'City', width: 450 },
+  ]
 
   return (
-    <Container>
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
-        <Typography variant="h5" fontWeight={800} mb={2}>Search for Zip Codes based on Livability Parameters</Typography>
-        <Divider/>
-        <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
-        
-        <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={medianHomeValue}
-                onChange={(e, newValue) => setMedianHomeValue(newValue)}
-                valueLabelDisplay="auto"
-                marks={marksMedianHomeValue}
-                min={1000}
-                max={2000000}
-              />
-            </Box>
+    <Grid>
+      <Container>
+        <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+          <Typography variant="h5" fontWeight={800} mb={2}>Search for Zip Codes based on Livability Parameters</Typography>
+          <Divider/>
+          <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
+          
+          <Grid sx={{ flexGrow: 1 }} Grid spacing={6} mb={2}>
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={medianHomeValue}
+                  onChange={(e, newValue) => setMedianHomeValue(newValue)}
+                  valueLabelDisplay="auto"
+                  marks={marksMedianHomeValue}
+                  min={1000}
+                  max={2000000}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={medianRentValue}
+                  onChange={(e, newValue) => setMedianRentValue(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksMedianRentValue}
+                  min={100}
+                  max={3500}
+                />
+              </Box>
+            </Grid>
+
+      
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={avgHouseholdIncome}
+                  onChange={(e, newValue) => setAvgHouseholdIncome(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksAvgHouseholdIncome}
+                  min={2500}
+                  max={250000}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={ageUnder18}
+                  onChange={(e, newValue) => setAgeUnder18(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksAgeUnder18}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={ageRange20_34}
+                  onChange={(e, newValue) => setAgeRange20_34(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksAgeRange20_34}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={ageRange35_64}
+                  onChange={(e, newValue) => setAgeRange35_64(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksAgeRange35_64}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={ageOver65}
+                  onChange={(e, newValue) => setAgeOver65(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksAgeOver65}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={bachelorGradRate}
+                  onChange={(e, newValue) => setBachelorGradRate(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksBachelorGradRate}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Box sx={{ width: 400 }} pl={2}>
+                <Slider
+                  value={hsGradRate}
+                  onChange={(e, newValue) => setHsGradRate(newValue)}
+                  step={1}
+                  valueLabelDisplay="auto"
+                  marks={marksHsGradRate}
+                />
+              </Box>
+            </Grid>
           </Grid>
 
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={medianRentValue}
-                onChange={(e, newValue) => setMedianRentValue(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksMedianRentValue}
-                min={100}
-                max={3500}
-              />
-            </Box>
-          </Grid>
-
-    
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={avgHouseholdIncome}
-                onChange={(e, newValue) => setAvgHouseholdIncome(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksAvgHouseholdIncome}
-                min={2500}
-                max={250000}
-              />
-            </Box>
-          </Grid>
-
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={ageUnder18}
-                onChange={(e, newValue) => setAgeUnder18(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksAgeUnder18}
-              />
-            </Box>
-          </Grid>
-
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={ageRange20_34}
-                onChange={(e, newValue) => setAgeRange20_34(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksAgeRange20_34}
-              />
-            </Box>
-          </Grid>
-
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={ageRange35_64}
-                onChange={(e, newValue) => setAgeRange35_64(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksAgeRange35_64}
-              />
-            </Box>
-          </Grid>
-
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={ageOver65}
-                onChange={(e, newValue) => setAgeOver65(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksAgeOver65}
-              />
-            </Box>
-          </Grid>
-
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={bachelorGradRate}
-                onChange={(e, newValue) => setBachelorGradRate(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksBachelorGradRate}
-              />
-            </Box>
-          </Grid>
-
-          <Grid item xs={6} md={6}>
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={hsGradRate}
-                onChange={(e, newValue) => setHsGradRate(newValue)}
-                step={1}
-                valueLabelDisplay="auto"
-                marks={marksHsGradRate}
-              />
-            </Box>
-          </Grid>
-        </Grid>
-
-        <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
-          <Button variant="outlined" onClick={() => search() } sx={{ height: 40 }}> Search </Button>
+          <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
+            <Button variant="outlined" onClick={() => search() } sx={{ height: 40 }}> Search </Button>
+          </Box>
         </Box>
-      </Box>
+      </Container>
 
-      {zipcodeInfo && <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
-
-        
-
+      {zipcodeInfo && <Box mt={10} mb={3} p={3} ml={5} mr={5} sx={{ background: 'black', borderRadius: '16px', display: 'flex'}} >
+        <div style={{ height: 1000, width: '100%' }}>
+          <DataGrid
+            rows={zipcodeInfo}
+            columns={columns}
+            paginationModel={{ page: 0, pageSize: 10 }}
+          />
+        </div>
       </Box>}
-
-    </Container>
+    </Grid>
   );
 };
