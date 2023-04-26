@@ -4,32 +4,30 @@ const config = require('../config.json');
 
 export default function RankingsPage() {
 
-  const [selectedZipcode, setselectedZipcode] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
 
-  useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/rankingsPage`)
+  const searchTopBusinessZipcode = () => {
+    fetch(`http://${config.server_host}:${config.server_port}/top_business_zipcode/${category}`)
       .then(res => res.json())
-      .then(resJson => setselectedZipcode(resJson));
-  }, []);
+      .then(resJson => setZipBusinessInfo(resJson));
 
-
-  const searchRoute1 = () => {
-  }
+    console.log(category);
+    console.log(zipBusinessInfo);
+  };
 
   return (
     <Container>
       <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
-        <h2>Find all housing, demographics, and economic info for a particular zip code</h2>
+        <h2>Find the top zip codes for a particular business category</h2>
         <p>Enter the following parameters and search:</p>
-        <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setselectedZipcode(e.target.value)}/>
+        {/* Change to a dropdown with fix values of business categories */}
+        <TextField id="outlined-basic" label="Business Category" variant="outlined" required inputProps={{maxLength: 99}} onChange={(e) => setCategory(e.target.value)}/>
 
         <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
-          <Button variant="outlined" onClick={() => searchRoute1() } sx={{ height: 40 }}> Search </Button>
+          <Button variant="outlined" onClick={() => searchTopBusinessZipcode() } sx={{ height: 40 }}> Search </Button>
         </Box>
       </Box>
-
-      {<zipcodeSearchCard zipcode={selectedZipcode}/>}
-  
     </Container>
   );
 };
