@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Modal, Typography, Grid} from '@mui/material';
 const config = require('../config.json');
 
-export default function ZipcodeSearchCard({zipcode}){
+export default function ZipcodeSearchCard({zipcodeInfo, handleClose}){
     return (
         <Modal>
             <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >

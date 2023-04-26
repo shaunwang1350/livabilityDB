@@ -1,35 +1,24 @@
 import { useEffect, useState } from 'react';
-import { Container, TextField, Box, Button } from '@mui/material';
+import { Container, Box } from '@mui/material';
 const config = require('../config.json');
 
 export default function StatisticsPage() {
 
-  const [selectedZipcode, setselectedZipcode] = useState(null);
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/statisticsPage`)
+    fetch(`http://${config.server_host}:${config.server_port}/us_statistics`)
       .then(res => res.json())
-      .then(resJson => setselectedZipcode(resJson));
+      .then(resJson => setStats(resJson));
   }, []);
-
-
-  const searchRoute1 = () => {
-  }
 
   return (
     <Container>
       <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
-        <h2>Find all housing, demographics, and economic info for a particular zip code</h2>
-        <p>Enter the following parameters and search:</p>
-        <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setselectedZipcode(e.target.value)}/>
-
-        <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
-          <Button variant="outlined" onClick={() => searchRoute1() } sx={{ height: 40 }}> Search </Button>
-        </Box>
+        <h2>Statistics across all US Zip Codes</h2>
+        {/* Display all US Statistics */}
+        {console.log(stats)}
       </Box>
-
-      {<zipcodeSearchCard zipcode={selectedZipcode}/>}
-  
     </Container>
   );
 };

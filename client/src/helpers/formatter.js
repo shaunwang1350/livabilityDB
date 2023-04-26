@@ -8,3 +8,7 @@ export function formatReleaseDate(date) {
   const dateObj = new Date(Date.parse(date));
   return dateObj.toLocaleString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
+
+export function nonNullVal(val) {
+  return val ?? "N/A";
+}
