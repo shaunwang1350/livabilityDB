@@ -19,6 +19,7 @@ app.get('/business_score/:category', routes.business_score);
 app.get('/housing_score', routes.housing_score);
 app.get('/economics_score', routes.economics_score);
 app.get('/socio_demographics_score', routes.socio_demographics_score);
+app.get('/business_category', routes.business_category);
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)
