@@ -1,31 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Container, TextField, Box, Button, Autocomplete, Typography, Divider } from '@mui/material';
+import { useEffect, useState} from 'react';
+import { Container, TextField, Box, Button, Autocomplete, Typography, Divider} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 const config = require('../config.json');
 
 export default function RankingsPage() {
 
   const [allCategories, setAllCategories] = useState([]);
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState();
   const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
 
-
-  const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: 'Pulp Fiction', year: 1994 }
-  ]
-
-  const options = top100Films.map((option) => {
-    const firstLetter = option.title[0].toUpperCase();
-    return {
-      firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
-      ...option,
-    };
-  });
+  const defaultProps = {
+    options: allCategories,
+    getOptionLabel: (option) => option.name,
+  };
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/business_category`)
@@ -33,13 +20,20 @@ export default function RankingsPage() {
       .then(resJson => setAllCategories(resJson));
   }, []);
 
+  const columns = [
+    { field: 'zipcode', headerName: 'Zipcode', width: 220 },
+    { field: 'state', headerName: 'State', width: 200 },
+    { field: 'city', headerName: 'City', width: 450 },
+    { field: 'num_business', headerName: '# of Businesses', width: 100 },
+    { field: 'avg_review_star', headerName: 'Avg Star Reviews', width: 100 }
+  ]
 
   const searchTopBusinessZipcode = () => {
+    console.log(category);
     fetch(`http://${config.server_host}:${config.server_port}/top_business_zipcode/${category}`)
       .then(res => res.json())
-      .then(resJson => setZipBusinessInfo(resJson));
+      .then(resJson => setZipBusinessInfo(resJson), [category]);
 
-    console.log(category);
     console.log(zipBusinessInfo);
   };
 
@@ -51,18 +45,32 @@ export default function RankingsPage() {
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
         <Autocomplete
-          id="grouped-demo"
-          options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
-          groupBy={(option) => option.firstLetter}
-          getOptionLabel={(option) => option.title}
+          {...defaultProps}
+          value = {category}
+          onInputChange={(event, newInputValue) => {
+            setCategory(newInputValue);
+            console.log(newInputValue);
+          }}
+          disablePortal
           sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="With categories" />}
+          renderInput={(params) => <TextField {...params} label="Business Categories"/>}
         />
 
         <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
           <Button variant="outlined" onClick={() => searchTopBusinessZipcode() } sx={{ height: 40 }}> Search </Button>
         </Box>
       </Box>
+
+      {zipBusinessInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+          <div style={{ height: 1000, width: '100%' }}>
+          <DataGrid
+            rows={zipBusinessInfo}
+            columns={columns}
+            paginationModel={{ page: 0, pageSize: 10 }}
+          />
+          </div>
+      </Box>}
+
     </Container>
   );
 };
