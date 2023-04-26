@@ -23,7 +23,9 @@ export default function ParametersSearchPage() {
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search`)
       .then(res => res.json())
-      .then(resJson => setZipcodeInfo(resJson));
+      .then(resJson => {
+        const zipcodeInfo = resJson.map((info) => ({ id: info.zipcode, ...info })); 
+        setZipcodeInfo(zipcodeInfo)});
   }, []);
 
   const search = () => {
@@ -38,7 +40,9 @@ export default function ParametersSearchPage() {
     `&bachelor_grad_rate_low=${bachelorGradRate[0]}&bachelor_grad_rate_high=${bachelorGradRate[1]}` +
     `&hs_grad_rate_low=${hsGradRate[0]}&hs_grad_rate_high=${hsGradRate[1]}`)
       .then(res => res.json())
-      .then(resJson => setZipcodeInfo(resJson));
+      .then(resJson => {
+        const zipcodeInfo = resJson.map((info) => ({ id: info.zipcode, ...info })); 
+        setZipcodeInfo(zipcodeInfo)});
 
     console.log(medianHomeValue);
     console.log(medianRentValue);
