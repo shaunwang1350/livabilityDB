@@ -10,15 +10,15 @@ export default function ParametersSearchPage() {
 
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
 
-  const [medianHomeValue, setMedianHomeValue] = useState([380000 , 1550000]);
-  const [medianRentValue, setMedianRentValue] = useState([800, 2800]);
-  const [avgHouseholdIncome, setAvgHouseholdIncome] = useState([50000, 200000]);
-  const [ageUnder18, setAgeUnder18] = useState([20, 80]);
-  const [ageRange20_34, setAgeRange20_34] = useState([20, 80]);
-  const [ageRange35_64, setAgeRange35_64] = useState([20, 80]);
-  const [ageOver65, setAgeOver65] = useState([20, 80]);
-  const [bachelorGradRate, setBachelorGradRate] = useState([20, 80]);
-  const [hsGradRate, setHsGradRate] = useState([20, 80]);
+  const [medianHomeValue, setMedianHomeValue] = useState([1000 , 2000000]);
+  const [medianRentValue, setMedianRentValue] = useState([100, 3500]);
+  const [avgHouseholdIncome, setAvgHouseholdIncome] = useState([2500, 250000]);
+  const [ageUnder18, setAgeUnder18] = useState([0, 100]);
+  const [ageRange20_34, setAgeRange20_34] = useState([0, 100]);
+  const [ageRange35_64, setAgeRange35_64] = useState([0, 100]);
+  const [ageOver65, setAgeOver65] = useState([0, 100]);
+  const [bachelorGradRate, setBachelorGradRate] = useState([0, 100]);
+  const [hsGradRate, setHsGradRate] = useState([0, 100]);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search`)
