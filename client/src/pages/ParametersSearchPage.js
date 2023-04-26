@@ -4,6 +4,7 @@ import ZipcodeSearchCard from '../components/ZipcodeSearchCard';
 const config = require('../config.json');
 
 export default function ParametersSearchPage() {
+
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
 
   const [medianHomeValue, setMedianHomeValue] = useState([10000, 2000000]);
