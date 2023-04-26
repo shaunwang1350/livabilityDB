@@ -1,19 +1,24 @@
 import { useEffect, useState } from 'react';
 import { Container, TextField, Box, Button } from '@mui/material';
+import ZipcodeSearchCard from '../components/ZipcodeSearchCard';
 const config = require('../config.json');
 
 export default function ParametersSearchPage() {
 
-  const [selectedZipcode, setselectedZipcode] = useState(null);
+  const [zipcode, setZipcode] = useState(null);
+  const [zipcodeInfo, setZipcodeInfo] = useState(null);
 
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/parametersSearchPage`)
+    fetch(`http://${config.server_host}:${config.server_port}/search`)
       .then(res => res.json())
-      .then(resJson => setselectedZipcode(resJson));
+      .then(resJson => setZipcodeInfo(resJson));
   }, []);
 
 
-  const searchRoute1 = () => {
+  const search = () => {
+    fetch(`http://${config.server_host}:${config.server_port}/search?`)
+      .then(res => res.json())
+      .then(resJson => setZipcodeInfo(resJson));
   }
 
   return (
@@ -28,7 +33,7 @@ export default function ParametersSearchPage() {
         </Box>
       </Box>
 
-      {<zipcodeSearchCard zipcode={selectedZipcode}/>}
+      <ZipcodeSearchCard zipcode={zipcodeInfo} handleClose={() => setZipcode(null)}/>
   
     </Container>
   );
