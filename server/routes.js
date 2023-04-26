@@ -34,56 +34,26 @@ const zipcode = async function(req, res) {
 
 // Route 2: GET /business/:zipcode
 const business = async function(req, res) {
-  const page = req.query.page;
-  const pageSize = req.query.page_size ?? 10;
-
-  if (!page) {
-    connection.query(`
-      SELECT B.id, B.name, B.address, B.review_stars, B.review_count, GROUP_CONCAT(C.name ORDER BY C.name SEPARATOR ', ') AS business_category_list
-      FROM Business B
-      JOIN Business_Category BC ON B.id = BC.business_id
-      JOIN Category C ON BC.category_id = C.id
-      WHERE B.zipcode = ${req.params.zipcode}
-      GROUP BY B.id, B.name, B.address, B.review_stars, B.review_count
-      ORDER BY B.name
-      LIMIT ${pageSize}
-    `, (err, data) => {
-      if (err || data.length === 0) {
-        console.log(err);
-        res.json({});
-      } else {
-        res.json(data);
-      }
-    });
-  } else {
-    const offset = (page - 1) * pageSize;
-
-    connection.query(`
-      SELECT B.id, B.name, B.address, B.review_stars, B.review_count, GROUP_CONCAT(C.name ORDER BY C.name SEPARATOR ', ') AS business_category_list
-      FROM Business B
-      JOIN Business_Category BC ON B.id = BC.business_id
-      JOIN Category C ON BC.category_id = C.id
-      WHERE B.zipcode = ${req.params.zipcode}
-      GROUP BY B.id, B.name, B.address, B.review_stars, B.review_count
-      ORDER BY B.name
-      LIMIT ${pageSize}
-      OFFSET ${offset}
-    `, (err, data) => {
-      if (err || data.length === 0) {
-        console.log(err);
-        res.json({});
-      } else {
-        res.json(data);
-      }
-    });
-  }
+  connection.query(`
+    SELECT B.id, B.name, B.address, B.review_stars, B.review_count, GROUP_CONCAT(C.name ORDER BY C.name SEPARATOR ', ') AS business_category_list
+    FROM Business B
+    JOIN Business_Category BC ON B.id = BC.business_id
+    JOIN Category C ON BC.category_id = C.id
+    WHERE B.zipcode = ${req.params.zipcode}
+    GROUP BY B.id, B.name, B.address, B.review_stars, B.review_count
+    ORDER BY B.name
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data);
+    }
+  });
 }
 
 // Route 3: GET /search
 const search = async function(req, res) {
-  const page = req.query.page;
-  const pageSize = req.query.page_size ?? 10;
-
   // Default parameters are determined by analyzing the data in the database
   const medianHomeValueHigh = req.query.median_home_value_high ?? 2000000;
   const medianHomeValueLow = req.query.median_home_value_low ?? 10000;
@@ -104,119 +74,55 @@ const search = async function(req, res) {
   const hsGradRateHigh = req.query.hs_grad_rate_high ?? 100;
   const hsGradRateLow = req.query.hs_grad_rate_low ?? 0;
 
-  if (!page) {
-    connection.query(`
-      SELECT *
-      FROM Zipcode
-      WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
-            (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
-            (average_household_income < ${avgHouseholdIncomedHigh} AND average_household_income > ${avghouseholdIncomeLow}) AND
-            (age_under_18 < ${ageUnder18High} AND age_under_18 > ${ageUnder18Low}) AND
-            (age_range_20_34 < ${ageRange20_34High} AND age_range_20_34 > ${ageRange20_34Low}) AND
-            (age_range_35_64 < ${ageRange35_64High} AND age_range_35_64 > ${ageRange35_64Low}) AND
-            (age_over_65 < ${ageOver65High} AND age_over_65 > ${ageOver65Low}) AND
-            (bachelor_grad_rate < ${bachelorGradRateHigh} AND bachelor_grad_rate > ${bachelorGradRateLow}) AND
-            (hs_grad_rate < ${hsGradRateHigh} AND hs_grad_rate > ${hsGradRateLow})
-      ORDER BY zipcode
-      LIMIT ${pageSize}
-    `, (err, data) => {
-      if (err || data.length === 0) {
-        console.log(err);
-        res.json([]);
-      } else {
-        res.json(data);
-      }
-    });
-  } else {
-    const offset = (page - 1) * pageSize;
-
-    connection.query(`
-      SELECT *
-      FROM Zipcode
-      WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
-            (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
-            (average_household_income < ${avgHouseholdIncomedHigh} AND average_household_income > ${avghouseholdIncomeLow}) AND
-            (age_under_18 < ${ageUnder18High} AND age_under_18 > ${ageUnder18Low}) AND
-            (age_range_20_34 < ${ageRange20_34High} AND age_range_20_34 > ${ageRange20_34Low}) AND
-            (age_range_35_64 < ${ageRange35_64High} AND age_range_35_64 > ${ageRange35_64Low}) AND
-            (age_over_65 < ${ageOver65High} AND age_over_65 > ${ageOver65Low}) AND
-            (bachelor_grad_rate < ${bachelorGradRateHigh} AND bachelor_grad_rate > ${bachelorGradRateLow}) AND
-            (hs_grad_rate < ${hsGradRateHigh} AND hs_grad_rate > ${hsGradRateLow})
-      ORDER BY zipcode
-      LIMIT ${pageSize}
-      OFFSET ${offset}
-    `, (err, data) => {
-      if (err || data.length === 0) {
-        console.log(err);
-        res.json([]);
-      } else {
-        res.json(data);
-      }
-    });
-  }
+  connection.query(`
+    SELECT *
+    FROM Zipcode
+    WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
+          (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
+          (average_household_income < ${avgHouseholdIncomedHigh} AND average_household_income > ${avghouseholdIncomeLow}) AND
+          (age_under_18 < ${ageUnder18High} AND age_under_18 > ${ageUnder18Low}) AND
+          (age_range_20_34 < ${ageRange20_34High} AND age_range_20_34 > ${ageRange20_34Low}) AND
+          (age_range_35_64 < ${ageRange35_64High} AND age_range_35_64 > ${ageRange35_64Low}) AND
+          (age_over_65 < ${ageOver65High} AND age_over_65 > ${ageOver65Low}) AND
+          (bachelor_grad_rate < ${bachelorGradRateHigh} AND bachelor_grad_rate > ${bachelorGradRateLow}) AND
+          (hs_grad_rate < ${hsGradRateHigh} AND hs_grad_rate > ${hsGradRateLow})
+    ORDER BY zipcode
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
 }
 
 // Route 4: GET /top_business_zipcode/:category
 const top_business_zipcode = async function(req, res) {
-  const page = req.query.page;
-  const pageSize = req.query.page_size ?? 10;
-
-  if (!page) {
-    connection.query(`
-      SELECT Z.zipcode,
-        Z.city,
-        Z.state,
-        AVG(B.review_stars) AS avg_review_star,
-        COUNT(*) AS num_business
-      FROM Zipcode Z
-      JOIN (
-        SELECT review_stars, zipcode
-        FROM Business b
-        JOIN Business_Category BC ON b.id = BC.business_id
-        JOIN Category C ON BC.category_id = C.id
-        WHERE C.name = '${req.params.category}'
-      ) B ON Z.zipcode = B.zipcode
-      GROUP BY Z.zipcode, Z.city, Z.state
-      ORDER BY avg_review_star DESC, num_business DESC
-      LIMIT ${pageSize}
-    `, (err, data) => {
-      if (err || data.length === 0) {
-        console.log(err);
-        res.json({});
-      } else {
-        res.json(data);
-      }
-    });
-  } else {
-    const offset = (page - 1) * pageSize;
-
-    connection.query(`
-      SELECT Z.zipcode,
-        Z.city,
-        Z.state,
-        AVG(B.review_stars) AS avg_review_star,
-        COUNT(*) AS num_business
-      FROM Zipcode Z
-      JOIN (
-        SELECT review_stars, zipcode
-        FROM Business b
-        JOIN Business_Category BC ON b.id = BC.business_id
-        JOIN Category C ON BC.category_id = C.id
-        WHERE C.name = '${req.params.category}'
-      ) B ON Z.zipcode = B.zipcode
-      GROUP BY Z.zipcode, Z.city, Z.state
-      ORDER BY avg_review_star DESC, num_business DESC
-      LIMIT ${pageSize}
-      OFFSET ${offset}
-    `, (err, data) => {
-      if (err || data.length === 0) {
-        console.log(err);
-        res.json({});
-      } else {
-        res.json(data);
-      }
-    });
-  }
+  connection.query(`
+    SELECT Z.zipcode,
+      Z.city,
+      Z.state,
+      AVG(B.review_stars) AS avg_review_star,
+      COUNT(*) AS num_business
+    FROM Zipcode Z
+    JOIN (
+      SELECT review_stars, zipcode
+      FROM Business b
+      JOIN Business_Category BC ON b.id = BC.business_id
+      JOIN Category C ON BC.category_id = C.id
+      WHERE C.name = '${req.params.category}'
+    ) B ON Z.zipcode = B.zipcode
+    GROUP BY Z.zipcode, Z.city, Z.state
+    ORDER BY avg_review_star DESC, num_business DESC
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data);
+    }
+  });
 }
 
 // Route 5: GET /us_statistics
@@ -317,8 +223,8 @@ const housing_economics_demographics_score = async function(req, res) {
   const householdIncomeWeight = req.query.household_income_weight ?? 0.33;
   const povertyRateWeight = req.query.poverty_rate_weight ?? 0.33;
 
-  const educationWeight = req.query.education_weight ?? 0.33;
-  const ageWeight = req.query.age_weight ?? 0.33;
+  const educationWeight = req.query.education_weight ?? 0.5;
+  const ageWeight = req.query.age_weight ?? 0.5;
   const highEducationalAttainment = req.high_educational_attainment ?? 3;
   const agePreference = req.age_preference ?? 2;
 
