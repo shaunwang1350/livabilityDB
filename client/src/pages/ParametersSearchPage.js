@@ -51,9 +51,10 @@ export default function ParametersSearchPage() {
 
   return (
     <Container>
-      <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
         <h2>Search for Zip Codes based on Livability Parameters</h2>
-       {/* Don't need a text field but kept the button to allow testing the search() function */}
+        <p>Enter the following parameters and search:</p>
+        <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setZipcode(e.target.value)}/>
 
         <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
           <Button variant="outlined" onClick={() => search() } sx={{ height: 40 }}> Search </Button>
