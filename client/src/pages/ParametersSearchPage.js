@@ -23,7 +23,7 @@ export default function ParametersSearchPage() {
 
   return (
     <Container>
-      <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
         <h2>Find all housing, demographics, and economic info for a particular zip code</h2>
         <p>Enter the following parameters and search:</p>
         <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setZipcode(e.target.value)}/>

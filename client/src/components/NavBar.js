@@ -42,7 +42,7 @@ export default function NavBar() {
 
 
   return (
-    <AppBar position='static' sx={{bgcolor: "transparent", boxShadow: 'none' }}>
+    <AppBar position='static' sx={{background: 'linear-gradient(to right bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))', boxShadow: 'none' }}>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <NavText href='/' text='Zipcheck' isMain />
@@ -73,18 +73,9 @@ export default function NavBar() {
           aria-controls={open ? 'basic-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
-          onClick={() => handleClose('/statistics')}
-        >
-          U.S. Statistics
-        </Button>
-        <Button
-          id="basic-button"
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
           onClick={() => handleClose('/rankings')}
         >
-          Rankings
+          Zipcode Rankings
         </Button>
 
         <Button

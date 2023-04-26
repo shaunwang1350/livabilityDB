@@ -7,7 +7,6 @@ import HomePage from './pages/HomePage';
 import ZipcodeSearchPage from "./pages/ZipcodeSearchPage";
 import BusinessZipSearchPage from "./pages/BusinessZipSearchPage";
 import ParametersSearchPage from "./pages/ParametersSearchPage";
-import StatisticsPage from "./pages/StatisticsPage";
 import RankingsPage from "./pages/RankingsPage";
 import AnalysisPage from "./pages/AnalysisPage";
 
@@ -32,7 +31,6 @@ export default function App() {
           <Route path="/zipcodeSearch" element={<ZipcodeSearchPage />} />
           <Route path="/businessZipCodeSearch" element={<BusinessZipSearchPage />} />
           <Route path="/parametersSearch" element={<ParametersSearchPage />} />
-          <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="/rankings" element={<RankingsPage />} />
           <Route path="/analysis" element={<AnalysisPage />} />
         </Routes>
