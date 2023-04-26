@@ -4,8 +4,15 @@ const config = require('../config.json');
 
 export default function RankingsPage() {
 
+  const [allCategories, setAllCategories] = useState([]);
   const [category, setCategory] = useState(null);
   const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://${config.server_host}:${config.server_port}/business_category`)
+      .then(res => res.json())
+      .then(resJson => setAllCategories(resJson));
+  }, []);
 
   const searchTopBusinessZipcode = () => {
     fetch(`http://${config.server_host}:${config.server_port}/top_business_zipcode/${category}`)
@@ -21,6 +28,7 @@ export default function RankingsPage() {
       <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
         <h2>Find the top zip codes for a particular business category</h2>
         <p>Enter the following parameters and search:</p>
+        {console.log(allCategories)}
         {/* Change to a dropdown with fix values of business categories */}
         <TextField id="outlined-basic" label="Business Category" variant="outlined" required inputProps={{maxLength: 99}} onChange={(e) => setCategory(e.target.value)}/>
 

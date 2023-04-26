@@ -661,6 +661,20 @@ const socio_demographics_score = async function(req, res) {
   }
 }
 
+// Route 10: GET /business_category
+const business_category = async function(req, res) {
+  connection.query(`
+    SELECT name FROM Category;
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data);
+    }
+  });
+}
+
 module.exports = {
   zipcode,
   business,
@@ -671,4 +685,5 @@ module.exports = {
   housing_score,
   economics_score,
   socio_demographics_score,
+  business_category
 }
