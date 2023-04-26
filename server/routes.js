@@ -89,8 +89,8 @@ const search = async function(req, res) {
   const medianHomeValueLow = req.query.median_home_value_low ?? 10000;
   const medianRentValueHigh = req.query.median_rent_value_high ?? 3500;
   const medianRentValueLow = req.query.median_rent_value_low ?? 100;
-  const averageHouseholdIncomedHigh = req.query.average_household_income_high ?? 250000;
-  const averagehouseholdIncomeLow = req.query.average_household_income_low ?? 2500;
+  const avgHouseholdIncomedHigh = req.query.avg_household_income_high ?? 250000;
+  const avghouseholdIncomeLow = req.query.avg_household_income_low ?? 2500;
   const ageUnder18High = req.query.age_under_18_high ?? 100;
   const ageUnder18Low = req.query.age_under_18_low ?? 0;
   const ageRange20_34High = req.query.age_range_20_34_high ?? 100;
@@ -110,7 +110,7 @@ const search = async function(req, res) {
       FROM Zipcode
       WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
             (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
-            (average_household_income < ${averageHouseholdIncomedHigh} AND average_household_income > ${averagehouseholdIncomeLow}) AND
+            (average_household_income < ${avgHouseholdIncomedHigh} AND average_household_income > ${avghouseholdIncomeLow}) AND
             (age_under_18 < ${ageUnder18High} AND age_under_18 > ${ageUnder18Low}) AND
             (age_range_20_34 < ${ageRange20_34High} AND age_range_20_34 > ${ageRange20_34Low}) AND
             (age_range_35_64 < ${ageRange35_64High} AND age_range_35_64 > ${ageRange35_64Low}) AND
@@ -135,7 +135,7 @@ const search = async function(req, res) {
       FROM Zipcode
       WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
             (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
-            (average_household_income < ${averageHouseholdIncomedHigh} AND average_household_income > ${averagehouseholdIncomeLow}) AND
+            (average_household_income < ${avgHouseholdIncomedHigh} AND average_household_income > ${avghouseholdIncomeLow}) AND
             (age_under_18 < ${ageUnder18High} AND age_under_18 > ${ageUnder18Low}) AND
             (age_range_20_34 < ${ageRange20_34High} AND age_range_20_34 > ${ageRange20_34Low}) AND
             (age_range_35_64 < ${ageRange35_64High} AND age_range_35_64 > ${ageRange35_64Low}) AND
@@ -661,6 +661,20 @@ const socio_demographics_score = async function(req, res) {
   }
 }
 
+// Route 10: GET /business_category
+const business_category = async function(req, res) {
+  connection.query(`
+    SELECT name FROM Category;
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data);
+    }
+  });
+}
+
 module.exports = {
   zipcode,
   business,
@@ -671,4 +685,5 @@ module.exports = {
   housing_score,
   economics_score,
   socio_demographics_score,
+  business_category
 }

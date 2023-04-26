@@ -4,8 +4,10 @@ const config = require('../config.json');
 
 export default function RankingsPage() {
 
+  const [allCategories, setAllCategories] = useState([]);
   const [category, setCategory] = useState(null);
   const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
+
 
   const top100Films = [
     { title: 'The Shawshank Redemption', year: 1994 },
@@ -25,6 +27,13 @@ export default function RankingsPage() {
     };
   });
 
+  useEffect(() => {
+    fetch(`http://${config.server_host}:${config.server_port}/business_category`)
+      .then(res => res.json())
+      .then(resJson => setAllCategories(resJson));
+  }, []);
+
+
   const searchTopBusinessZipcode = () => {
     fetch(`http://${config.server_host}:${config.server_port}/top_business_zipcode/${category}`)
       .then(res => res.json())
@@ -36,6 +45,7 @@ export default function RankingsPage() {
 
   return (
     <Container>
+
       <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all housing, demographics, and economic info for a particular zip code</Typography>
         <Divider/>
