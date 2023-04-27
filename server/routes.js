@@ -214,7 +214,7 @@ const business_score = async function(req, res) {
 
 // Route 7: GET /housing_economics_demographics_score/:zipcode
 const housing_economics_demographics_score = async function(req, res) {
-  const houseWeight = req.query.house_weight ?? 0.5;
+  const homeWeight = req.query.home_weight ?? 0.5;
   const rentWeight = req.query.rent_weight ?? 0.5;
   const homeValueHigh = req.home_value_high ?? true;
   const rentValueHigh = req.rent_value_high ?? true;
@@ -241,7 +241,7 @@ const housing_economics_demographics_score = async function(req, res) {
       median_rent_value,
       home_value_score,
       rent_value_score,
-      ROUND((COALESCE((home_value_score * ${houseWeight}), (rent_value_score * ${houseWeight})) + COALESCE((rent_value_score * ${rentWeight}), (home_value_score * ${rentWeight}))), 2) AS final_weighted_housing_score,
+      ROUND((COALESCE((home_value_score * ${homeWeight}), (rent_value_score * ${homeWeight})) + COALESCE((rent_value_score * ${rentWeight}), (home_value_score * ${rentWeight}))), 2) AS final_weighted_housing_score,
       labor_force_participation_rate,
       average_household_income,
       poverty_rate,
