@@ -69,7 +69,7 @@ export default function AnalysisPage() {
 
   return (
     <Container>
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Analyze a Zip Code by Finding the Weighted Quintile Score of the Zip Code's Livability Parameters</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>

@@ -42,7 +42,7 @@ export default function RankingsPage() {
   return (
     <Container>
 
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find the top zip codes for a particular business category</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -64,7 +64,7 @@ export default function RankingsPage() {
         </Box>
       </Box>
 
-      {zipBusinessInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      {zipBusinessInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
           <div style={{ height: 1000, width: '100%' }}>
             <DataGrid
               rows={zipBusinessInfo}

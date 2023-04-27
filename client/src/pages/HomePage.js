@@ -59,7 +59,7 @@ export default function HomePage() {
         </Grid>
       </Box>
 
-      <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: 'black', borderRadius: '16px'}} >
+      <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Statistics across all US Zip Codes</Typography>
 
         <Divider/>

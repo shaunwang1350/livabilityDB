@@ -28,7 +28,7 @@ export default function BusinessZipSearchPage() {
 
   return (
     <Container>
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all business info for a particular zip code</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
