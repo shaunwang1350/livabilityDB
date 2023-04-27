@@ -91,7 +91,7 @@ export default function AnalysisPage() {
           renderInput={(params) => <TextField {...params} label="Business Categories"/>}
         />
 
-        <Typography variant="h4" fontWeight={800} >Your Zipcheck Report</Typography>
+        <Typography variant="h6" fontWeight={400} mb={2} mt={2} >Preference Weight for Business Parameters</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
           <Grid item xs={6} md={6}>
             <Box sx={{ width: 400 }} pl={2}>
