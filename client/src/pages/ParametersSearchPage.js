@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Container, Box, Button, Typography, Divider, Grid, Slider} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { nonNullVal } from '../helpers/formatter';
+import ParametersSearchCard from '../components/ParametersSearchCard';
 const config = require('../config.json');
 
 export default function ParametersSearchPage() {
 
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
+  const [zipcodeButton, setZipcodeButton] = useState(null);
 
   const [medianHomeValue, setMedianHomeValue] = useState([1000 , 2000000]);
   const [medianRentValue, setMedianRentValue] = useState([100, 3500]);
@@ -17,6 +18,9 @@ export default function ParametersSearchPage() {
   const [ageOver65, setAgeOver65] = useState([0, 100]);
   const [bachelorGradRate, setBachelorGradRate] = useState([0, 100]);
   const [hsGradRate, setHsGradRate] = useState([0, 100]);
+
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search`)
@@ -119,20 +123,35 @@ const columns = [
   { field: "unemployment_rate", headerName: "Unemployment Rate", width: 150 },
   { field: "median_rent_value", headerName: "Median Rent Value", width: 140 },
   { field: "poverty_rate", headerName: "Poverty Rate", width: 100 },
-  { field: "total_house_units", headerName: "Total House Units", width: 160 },
+  { field: "total_house_units", headerName: "Total House Units", width: 150 },
     {
       field: "action",
       headerName: "Details",
       renderCell: params => {  
-        return <Button variant="outlined">Details</Button>
-      }
+        const onClick = (e) => {
+          e.stopPropagation();
+          setOpen(true);
+          const api = params.api
+          const thisRow = {}
+          api
+            .getAllColumns()
+            .filter(c => c.field !== "__check__" && !!c)
+            .forEach(
+              c => (thisRow[c.field] = params.getValue(params.id, c.field))
+            )
+          setZipcodeButton(thisRow.zipcode);
+        }
+        return <div> <Button variant="outlined" onClick={onClick}>Details</Button> 
+        </div>
+      },
+      width:120
     }
   ]
 
   return (
     <Grid>
       <Container>
-        <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+        <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
           <Typography variant="h5" fontWeight={800} mb={2}>Search for Zip Codes based on Livability Parameters</Typography>
           <Divider/>
           <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -259,13 +278,15 @@ const columns = [
         </Box>
       </Container>
 
-      {zipcodeInfo && <Box mt={10} mb={3} p={3} ml={5} mr={5} sx={{ background: 'black', borderRadius: '16px', display: 'flex'}} >
+      {zipcodeInfo && <Box mt={10} mb={3} p={3} ml={5} mr={5} sx={{ background: 'black', borderRadius: '16px', display: 'flex', boxShadow: 24}} >
         <div style={{ height: 1000, width: '100%' }}>
           <DataGrid
             rows={zipcodeInfo}
             columns={columns}
             paginationModel={{ page: 0, pageSize: 100 }}
           />
+          {console.log("Calling parameters search card" + zipcodeButton)}
+          {open && <ParametersSearchCard zipcode={zipcodeButton} handleClose={handleClose}></ParametersSearchCard>}
         </div>
       </Box>}
     </Grid>

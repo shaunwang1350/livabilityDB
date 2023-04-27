@@ -19,7 +19,7 @@ export default function ZipcodeSearchPage() {
 
   return (
     <Container>
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all housing, demographics, and economic info for a particular zip code</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -30,7 +30,7 @@ export default function ZipcodeSearchPage() {
         </Box>
       </Box>
 
-      {zipcodeInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      {zipcodeInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
       <Typography variant="h4" fontWeight={800} >Your Zipcheck Report</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
           <Grid item xs={6} md={6}>
