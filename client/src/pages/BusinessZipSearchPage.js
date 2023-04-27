@@ -44,7 +44,7 @@ export default function BusinessZipSearchPage() {
         <DataGrid
           rows={businessInfo}
           columns={columns}
-          paginationModel={{ page: 0, pageSize: 10 }}
+          paginationModel={{ page: 0, pageSize: 100 }}
         />
         </div>
       </Box>}

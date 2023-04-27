@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Container, Box, Button, Typography, Divider, Grid, Slider} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { nonNullVal } from '../helpers/formatter';
 const config = require('../config.json');
-
-
-
 
 export default function ParametersSearchPage() {
 
@@ -110,10 +108,25 @@ export default function ParametersSearchPage() {
     { value: 100, label: '100%'},
   ];
 
-  const columns = [
-    { field: 'zipcode', headerName: 'Zipcode', width: 220 },
-    { field: 'state', headerName: 'State', width: 200 },
-    { field: 'city', headerName: 'City', width: 450 },
+const columns = [
+  { field: "zipcode", headerName: "Zipcode", width: 100 },
+  { field: "city", headerName: "City", width: 120 },
+  { field: "state", headerName: "State", width: 70 },
+  { field: "total_population", headerName: "Total population", width: 120 },
+  { field: "median_age", headerName: "Median age", width: 100 },
+  { field: "combined_bachelor_hs_rate", headerName: "Bachelor/HS Grad rate", width: 170 },
+  { field: "average_household_income", headerName: "Avg Household Income", width: 170 },
+  { field: "unemployment_rate", headerName: "Unemployment Rate", width: 150 },
+  { field: "median_rent_value", headerName: "Median Rent Value", width: 140 },
+  { field: "poverty_rate", headerName: "Poverty Rate", width: 100 },
+  { field: "total_house_units", headerName: "Total House Units", width: 160 },
+    {
+      field: "action",
+      headerName: "Details",
+      renderCell: params => {  
+        return <Button variant="outlined">Details</Button>
+      }
+    }
   ]
 
   return (
@@ -124,7 +137,7 @@ export default function ParametersSearchPage() {
           <Divider/>
           <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
           
-          <Grid sx={{ flexGrow: 1 }} Grid spacing={6} mb={2}>
+          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
             <Grid item xs={6} md={6}>
               <Box sx={{ width: 400 }} pl={2}>
                 <Slider
@@ -251,7 +264,7 @@ export default function ParametersSearchPage() {
           <DataGrid
             rows={zipcodeInfo}
             columns={columns}
-            paginationModel={{ page: 0, pageSize: 10 }}
+            paginationModel={{ page: 0, pageSize: 100 }}
           />
         </div>
       </Box>}
