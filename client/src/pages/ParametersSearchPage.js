@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Box, Button, Typography, Divider, Grid, Slider} from '@mui/material';
+import { Container, Box, Button, Typography, Divider, Grid, Slider, Fade} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import ParametersSearchCard from '../components/ParametersSearchCard';
 const config = require('../config.json');
@@ -8,6 +8,9 @@ export default function ParametersSearchPage() {
 
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
   const [zipcodeButton, setZipcodeButton] = useState(null);
+
+  const [show, setShow] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   const [medianHomeValue, setMedianHomeValue] = useState([1000 , 2000000]);
   const [medianRentValue, setMedianRentValue] = useState([100, 3500]);
@@ -21,6 +24,10 @@ export default function ParametersSearchPage() {
 
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search`)
@@ -46,6 +53,7 @@ export default function ParametersSearchPage() {
         const zipcodeInfo = resJson.map((info) => ({ id: info.zipcode, ...info })); 
         setZipcodeInfo(zipcodeInfo)});
 
+        setShowResult(true);
     console.log(medianHomeValue);
     console.log(medianRentValue);
     console.log(avgHouseholdIncome);
@@ -149,9 +157,10 @@ const columns = [
   ]
 
   return (
+    <Fade in={show}>
     <Grid>
       <Container>
-        <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+        <Box mt={20} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
           <Typography variant="h5" fontWeight={800} mb={2}>Search for Zip Codes based on Livability Parameters</Typography>
           <Divider/>
           <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -278,7 +287,8 @@ const columns = [
         </Box>
       </Container>
 
-      {zipcodeInfo && <Box mt={10} mb={3} p={3} ml={5} mr={5} sx={{ background: 'black', borderRadius: '16px', display: 'flex', boxShadow: 24}} >
+      {zipcodeInfo && <Fade in={showResult}>
+      <Box mt={10} mb={3} p={3} ml={5} mr={5} sx={{ background: 'black', borderRadius: '16px', display: 'flex', boxShadow: 24}} >
         <div style={{ height: 1000, width: '100%' }}>
           <DataGrid
             rows={zipcodeInfo}
@@ -288,7 +298,9 @@ const columns = [
           {console.log("Calling parameters search card" + zipcodeButton)}
           {open && <ParametersSearchCard zipcode={zipcodeButton} handleClose={handleClose}></ParametersSearchCard>}
         </div>
-      </Box>}
+      </Box>
+      </Fade>}
     </Grid>
+    </Fade>
   );
 };

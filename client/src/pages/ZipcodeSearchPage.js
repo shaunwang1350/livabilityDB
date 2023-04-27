@@ -1,25 +1,34 @@
-import { useState } from 'react';
-import { Container, TextField, Box, Button, Typography, Grid, Divider } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Container, TextField, Box, Button, Typography, Grid, Divider, Fade } from '@mui/material';
 import { nonNullVal } from '../helpers/formatter';
+
 const config = require('../config.json');
 
 export default function ZipcodeSearchPage() {
 
   const [zipcode, setZipcode] = useState(null);
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
+  const [show, setShow] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
 
   const zipcodeSearchRoute = () => {
     fetch(`http://${config.server_host}:${config.server_port}/zipcode/${zipcode}`)
       .then(res => res.json())
       .then(resJson => setZipcodeInfo(resJson));
 
+    setShowResult(true);
     console.log(zipcode);
     console.log(zipcodeInfo);
   };
 
   return (
+    <Fade in={show}>
     <Container>
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all housing, demographics, and economic info for a particular zip code</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -30,7 +39,8 @@ export default function ZipcodeSearchPage() {
         </Box>
       </Box>
 
-      {zipcodeInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      {zipcodeInfo && <Fade in={showResult}>
+      <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
       <Typography variant="h4" fontWeight={800} >Your Zipcheck Report</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
           <Grid item xs={6} md={6}>
@@ -359,7 +369,9 @@ export default function ZipcodeSearchPage() {
             <Typography variant="h6">Race two or more or unknown</Typography>
           </Grid>
         </Grid>
-      </Box>}
+      </Box>
+      </Fade>}
     </Container>
+    </Fade>
   );
 };
