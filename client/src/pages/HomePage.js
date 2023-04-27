@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {Grid, Box, Button, Typography, Divider} from '@mui/material';
+import {Grid, Box, Button, Typography, Divider, Fade} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { nonNullVal } from '../helpers/formatter';
 import bgimg from '../images/bkvector.png';
@@ -9,11 +9,14 @@ const config = require('../config.json');
 export default function HomePage() {
   
   const navigate = useNavigate();
-  const handleClick = (url) => {
-    navigate(url);
-  };
+  const handleClick = (url) => { navigate(url);};
 
   const [stats, setStats] = useState([]);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/us_statistics`)
@@ -22,6 +25,7 @@ export default function HomePage() {
   }, []);
 
   return (
+    <Fade in={show}>
     <Grid>
       <Box m={7} display="flex"
       justifyContent="center"
@@ -54,11 +58,12 @@ export default function HomePage() {
             </Button>
             </Grid>
           <Grid item xs={12} md={4}>
-            <img src={bgimg} alt="My Team" width="650" style={{'border-radius' : '2%'}}/>
+            <img src={bgimg} alt="My Team" width="650" sx={{'border-radius' : '2%'}}/>
           </Grid>
         </Grid>
       </Box>
 
+      
       <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Statistics across all US Zip Codes</Typography>
 
@@ -239,10 +244,8 @@ export default function HomePage() {
           <Typography variant="body2" mb={2}>Mean two or more or unknown race percentage across all US zip codes</Typography>
           </Grid>
         </Grid>
-
-        {console.log(stats)}
       </Box>
-
     </Grid>
+      </Fade>
   );
 };

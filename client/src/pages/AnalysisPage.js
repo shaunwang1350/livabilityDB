@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, TextField, Box, Button, Typography, Divider, Autocomplete, Grid, Slider} from '@mui/material';
+import { Container, TextField, Box, Button, Typography, Divider, Autocomplete, Grid, Slider, Fade} from '@mui/material';
 const config = require('../config.json');
 
 export default function AnalysisPage() {
@@ -36,12 +36,20 @@ export default function AnalysisPage() {
   const [businessScoreInfo, setBusinessScoreInfo] = useState(null);
   const [hedScoreInfo, setHedScoreInfo] = useState(null);
 
+  const [show, setShow] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
   const businessScore = () => {
     fetch(`http://${config.server_host}:${config.server_port}/business_score/${zipcode}/${category}` +
     `?review_weight=${reviewWeight}&count_weight=${countWeight}`)
       .then(res => res.json())
       .then(resJson => setBusinessScoreInfo(resJson));
 
+      setShowResult(true);
     console.log(zipcode);
     console.log(category);
     console.log(businessScoreInfo)
@@ -56,6 +64,7 @@ export default function AnalysisPage() {
       .then(res => res.json())
       .then(resJson => setHedScoreInfo(resJson));
 
+      setShowResult(true);
     console.log(zipcode);
     console.log(hedScoreInfo);
   };
@@ -73,8 +82,9 @@ export default function AnalysisPage() {
 
 
   return (
+    <Fade in={show}>
     <Container>
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Analyze a Zip Code by Finding the Weighted Quintile Score of the Zip Code's Livability Parameters</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -202,5 +212,6 @@ export default function AnalysisPage() {
         </Box>
       </Box>
     </Container>
+    </Fade>
   );
 };

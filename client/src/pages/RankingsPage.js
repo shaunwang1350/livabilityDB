@@ -1,5 +1,5 @@
 import { useEffect, useState} from 'react';
-import { Container, TextField, Box, Button, Autocomplete, Typography, Divider} from '@mui/material';
+import { Container, TextField, Box, Button, Autocomplete, Typography, Divider, Fade} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 const config = require('../config.json');
 
@@ -8,11 +8,17 @@ export default function RankingsPage() {
   const [allCategories, setAllCategories] = useState([]);
   const [category, setCategory] = useState();
   const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
+  const [show, setShow] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   const defaultProps = {
     options: allCategories,
     getOptionLabel: (option) => option.name,
   };
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/business_category`)
@@ -35,14 +41,14 @@ export default function RankingsPage() {
       .then(resJson => {
         const zipBusinessInfo = resJson.map((info) => ({ id: info.zipcode, ...info })); 
         setZipBusinessInfo(zipBusinessInfo)});
-
+    setShowResult(true);
     console.log(zipBusinessInfo);
   };
 
   return (
+    <Fade in={show}>
     <Container>
-
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find the top zip codes for a particular business category</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -64,7 +70,9 @@ export default function RankingsPage() {
         </Box>
       </Box>
 
-      {zipBusinessInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      {zipBusinessInfo && 
+      <Fade in={showResult}>
+      <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
           <div style={{ height: 1000, width: '100%' }}>
             <DataGrid
               rows={zipBusinessInfo}
@@ -72,8 +80,9 @@ export default function RankingsPage() {
               paginationModel={{ page: 0, pageSize: 100 }}
             />
           </div>
-      </Box>}
-
+      </Box>
+      </Fade>}
     </Container>
+    </Fade>
   );
 };

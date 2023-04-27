@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, TextField, Box, Button, Typography, Divider } from '@mui/material';
+import { Container, TextField, Box, Button, Typography, Divider, Fade } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 const config = require('../config.json');
 
@@ -8,15 +8,22 @@ export default function BusinessZipSearchPage() {
   const [zipcode, setZipcode] = useState([]);
   const [businessInfo, setBusinessInfo] = useState(null);
 
+  const [show, setShow] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+
   const businessZipSearchRoute = () => {
     fetch(`http://${config.server_host}:${config.server_port}/business/${zipcode}`)
       .then(res => res.json())
       .then(resJson => setBusinessInfo(resJson));
     
+      setShowResult(true);
     console.log(zipcode);
     console.log(businessInfo);
   };
 
+  useEffect(() => {
+    setShow(true);
+  }, []);
 
   const columns = [
     { field: 'name', headerName: 'Name', width: 220 },
@@ -27,8 +34,9 @@ export default function BusinessZipSearchPage() {
   ]
 
   return (
+    <Fade in={show}>
     <Container>
-      <Box mt={10} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all business info for a particular zip code</Typography>
         <Divider/>
         <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
@@ -39,7 +47,9 @@ export default function BusinessZipSearchPage() {
         </Box>
       </Box>
 
-      {businessInfo && <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
+      {businessInfo && 
+      <Fade in={showResult}>
+      <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px'}} >
         <div style={{ height: 1000, width: '100%' }}>
         <DataGrid
           rows={businessInfo}
@@ -47,7 +57,9 @@ export default function BusinessZipSearchPage() {
           paginationModel={{ page: 0, pageSize: 100 }}
         />
         </div>
-      </Box>}
+      </Box>
+      </Fade>}
     </Container>
+    </Fade>
   );
 };
