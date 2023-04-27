@@ -30,7 +30,6 @@ export default function ParametersSearchCard({zipcode, handleClose}) {
     boxShadow: 24,
     p: 4,
     };
-    
   
     return (
       <Modal
