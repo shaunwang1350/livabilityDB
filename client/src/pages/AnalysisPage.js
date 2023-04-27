@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, TextField, Box, Button, Typography, Divider, Autocomplete, Grid, Slider, Fade} from '@mui/material';
+import { nonNullVal } from '../helpers/formatter';
 const config = require('../config.json');
 
 export default function AnalysisPage() {
@@ -38,6 +39,7 @@ export default function AnalysisPage() {
 
   const [show, setShow] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [showResultSecond, setShowResultSecond] = useState(false);
 
   useEffect(() => {
     setShow(true);
@@ -49,7 +51,7 @@ export default function AnalysisPage() {
       .then(res => res.json())
       .then(resJson => setBusinessScoreInfo(resJson));
 
-      setShowResult(true);
+      setShowResultSecond(true);
     console.log(zipcode);
     console.log(category);
     console.log(businessScoreInfo)
@@ -211,6 +213,171 @@ export default function AnalysisPage() {
           <Button variant="outlined" onClick={() => {businessScore(); housingEconomicsDemographicsScore();}} sx={{ height: 40 }}> Search </Button>
         </Box>
       </Box>
+
+      {setHedScoreInfo && <Fade in={showResult}>
+      <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      <Typography variant="h4" fontWeight={800} >Your Zipcheck Report</Typography>
+        <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
+          <Grid item xs={6} md={6}>
+            <Typography variant="body1">{nonNullVal(setHedScoreInfo.zipcode)}</Typography>
+            <Typography variant="body1">{nonNullVal(setHedScoreInfo.city)}</Typography>
+            <Typography variant="body1">{nonNullVal(setHedScoreInfo.state)}</Typography>
+          </Grid>
+        </Grid>
+
+        <Divider/>
+        <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Socio Demographic Analysis & Scores</Typography>
+        <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.final_weighted_socio_demographic_score)}</Typography>
+            <Typography variant="h6">Final Weighted Socio Demographic Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.education_rate)}</Typography>
+            <Typography variant="h6">Education Rate</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.age_range_rate)}</Typography>
+            <Typography variant="h6">Age Range Rate</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.education_score)}</Typography>
+            <Typography variant="h6">Education Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.age_score)}</Typography>
+            <Typography variant="h6">Age Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+        </Grid>
+
+        <Divider/>
+        <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Housing Analysis & Scores</Typography>
+        <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.final_weighted_housing_score)}</Typography>
+            <Typography variant="h6">Final Weighted Housing Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.median_home_value)}</Typography>
+            <Typography variant="h6">Median Home Value</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.median_rent_value)}</Typography>
+            <Typography variant="h6">Median Rent Value</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.home_value_score)}</Typography>
+            <Typography variant="h6">Home Value Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.rent_value_score)}</Typography>
+            <Typography variant="h6">Rent Value Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+        </Grid>
+
+        <Divider/>
+        <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Housing Analysis & Scores</Typography>
+        <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.final_economic_weighted_score)}</Typography>
+            <Typography variant="h6">Final Economic Weighted Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.labor_force_participation_rate)}</Typography>
+            <Typography variant="h6">Labor Force Participation Rate</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.average_household_income)}</Typography>
+            <Typography variant="h6">Average Household Income</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.poverty_rate)}</Typography>
+            <Typography variant="h6">Poverty Rate</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.labor_force_score)}</Typography>
+            <Typography variant="h6">Labor Force Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.household_income_score)}</Typography>
+            <Typography variant="h6">Household Income Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+
+          <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(setHedScoreInfo.poverty_rate_score)}</Typography>
+            <Typography variant="h6">Poverty Rate Score</Typography>
+            <Typography variant="body2" mb={2}>Score description here</Typography>
+          </Grid>
+        </Grid>
+      </Box>
+      </Fade>}
+
+      {setBusinessScoreInfo && <Fade in={showResultSecond}>
+        <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+        <Divider/>
+          <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Business Analysis & Scores</Typography>
+          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>{nonNullVal(setBusinessScoreInfo.final_weighted_score)}</Typography>
+              <Typography variant="h6">Final Weighted Business Score</Typography>
+              <Typography variant="body2" mb={2}>Score description here</Typography>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>{nonNullVal(setBusinessScoreInfo.cat_avg_stars)}</Typography>
+              <Typography variant="h6">Cat Average Stars</Typography>
+              <Typography variant="body2" mb={2}>Score description here</Typography>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>{nonNullVal(setBusinessScoreInfo.category_count)}</Typography>
+              <Typography variant="h6">Category Count</Typography>
+              <Typography variant="body2" mb={2}>Score description here</Typography>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>{nonNullVal(setBusinessScoreInfo.review_score)}</Typography>
+              <Typography variant="h6">Reviews score</Typography>
+              <Typography variant="body2" mb={2}>Score description here</Typography>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>{nonNullVal(setBusinessScoreInfo.cat_count_score)}</Typography>
+              <Typography variant="h6">Categroy Count Score</Typography>
+              <Typography variant="body2" mb={2}>Score description here</Typography>
+            </Grid>
+          </Grid>
+        </Box>
+      </Fade>}
     </Container>
     </Fade>
   );
