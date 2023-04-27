@@ -75,7 +75,17 @@ const search = async function(req, res) {
   const hsGradRateLow = req.query.hs_grad_rate_low ?? 0;
 
   connection.query(`
-    SELECT *
+    SELECT zipcode,
+      city,
+      state,
+      total_population,
+      median_age,
+      combined_bachelor_hs_rate,
+      average_household_income,
+      unemployment_rate,
+      median_rent_value,
+      poverty_rate,
+      total_house_units
     FROM Zipcode
     WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
           (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
@@ -219,7 +229,7 @@ const housing_economics_demographics_score = async function(req, res) {
   const homeValueHigh = req.home_value_high ?? true;
   const rentValueHigh = req.rent_value_high ?? true;
 
-  const lFRateWeight = req.query.lf_rate_weight ?? 0.33;
+  const lFRateWeight = req.query.lf_rate_weight ?? 0.34;
   const householdIncomeWeight = req.query.household_income_weight ?? 0.33;
   const povertyRateWeight = req.query.poverty_rate_weight ?? 0.33;
 
