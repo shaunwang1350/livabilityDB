@@ -5,11 +5,10 @@ const config = require('../config.json');
 
 export default function BusinessZipSearchPage() {
 
+  const [showResult, setShowResult] = useState(false);
+
   const [zipcode, setZipcode] = useState([]);
   const [businessInfo, setBusinessInfo] = useState(null);
-
-  const [show, setShow] = useState(false);
-  const [showResult, setShowResult] = useState(false);
 
   const businessZipSearchRoute = () => {
     fetch(`http://${config.server_host}:${config.server_port}/business/${zipcode}`)
@@ -21,10 +20,6 @@ export default function BusinessZipSearchPage() {
     console.log(businessInfo);
   };
 
-  useEffect(() => {
-    setShow(true);
-  }, []);
-
   const columns = [
     { field: 'name', headerName: 'Name', width: 220 },
     { field: 'address', headerName: 'Address', width: 200 },
@@ -34,7 +29,7 @@ export default function BusinessZipSearchPage() {
   ]
 
   return (
-    <Fade in={show}>
+    <Fade in={true}>
     <Container>
       <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all business info for a particular zip code</Typography>

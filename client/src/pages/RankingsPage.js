@@ -6,19 +6,15 @@ const config = require('../config.json');
 export default function RankingsPage() {
 
   const [allCategories, setAllCategories] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+
   const [category, setCategory] = useState();
   const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
-  const [show, setShow] = useState(false);
-  const [showResult, setShowResult] = useState(false);
 
   const defaultProps = {
     options: allCategories,
     getOptionLabel: (option) => option.name,
   };
-
-  useEffect(() => {
-    setShow(true);
-  }, []);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/business_category`)
@@ -27,11 +23,11 @@ export default function RankingsPage() {
   }, []);
 
   const columns = [
-    { field: 'zipcode', headerName: 'Zipcode', width: 220 },
-    { field: 'state', headerName: 'State', width: 200 },
-    { field: 'city', headerName: 'City', width: 450 },
-    { field: 'num_business', headerName: '# of Businesses', width: 100 },
-    { field: 'avg_review_star', headerName: 'Avg Star Reviews', width: 100 }
+    { field: 'zipcode', headerName: 'Zipcode', width: 100 },
+    { field: 'state', headerName: 'State', width: 100 },
+    { field: 'city', headerName: 'City', width: 300 },
+    { field: 'num_business', headerName: '# of Businesses', width: 200 },
+    { field: 'avg_review_star', headerName: 'Avg Star Reviews', width: 200 }
   ]
 
   const searchTopBusinessZipcode = () => {
@@ -46,7 +42,7 @@ export default function RankingsPage() {
   };
 
   return (
-    <Fade in={show}>
+    <Fade in={true}>
     <Container>
       <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find the top zip codes for a particular business category</Typography>

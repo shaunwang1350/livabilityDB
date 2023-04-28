@@ -6,14 +6,10 @@ const config = require('../config.json');
 
 export default function ZipcodeSearchPage() {
 
+  const [showResult, setShowResult] = useState(false);
+  
   const [zipcode, setZipcode] = useState(null);
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
-  const [show, setShow] = useState(false);
-  const [showResult, setShowResult] = useState(false);
-
-  useEffect(() => {
-    setShow(true);
-  }, []);
 
   const zipcodeSearchRoute = () => {
     fetch(`http://${config.server_host}:${config.server_port}/zipcode/${zipcode}`)
@@ -26,7 +22,7 @@ export default function ZipcodeSearchPage() {
   };
 
   return (
-    <Fade in={show}>
+    <Fade in={true}>
     <Container>
       <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all housing, demographics, and economic info for a particular zip code</Typography>

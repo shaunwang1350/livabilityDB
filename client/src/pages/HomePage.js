@@ -12,11 +12,6 @@ export default function HomePage() {
   const handleClick = (url) => { navigate(url);};
 
   const [stats, setStats] = useState([]);
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    setShow(true);
-  }, []);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/us_statistics`)
@@ -25,7 +20,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <Fade in={show}>
+    <Fade in={true}>
     <Grid>
       <Box m={7} display="flex"
       justifyContent="center"
