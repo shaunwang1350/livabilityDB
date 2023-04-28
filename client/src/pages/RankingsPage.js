@@ -5,6 +5,10 @@ const config = require('../config.json');
 
 export default function RankingsPage() {
 
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    setShow(true);
+  }, []);
   const [allCategories, setAllCategories] = useState([]);
   const [showResult, setShowResult] = useState(false);
 
@@ -42,7 +46,7 @@ export default function RankingsPage() {
   };
 
   return (
-    <Fade in={true}>
+    <Fade in={show}>
     <Container>
       <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find the top zip codes for a particular business category</Typography>

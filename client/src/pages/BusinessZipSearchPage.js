@@ -6,6 +6,10 @@ const config = require('../config.json');
 export default function BusinessZipSearchPage() {
 
   const [showResult, setShowResult] = useState(false);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    setShow(true);
+  }, []);
 
   const [zipcode, setZipcode] = useState([]);
   const [businessInfo, setBusinessInfo] = useState(null);
@@ -29,7 +33,7 @@ export default function BusinessZipSearchPage() {
   ]
 
   return (
-    <Fade in={true}>
+    <Fade in={show}>
     <Container>
       <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all business info for a particular zip code</Typography>

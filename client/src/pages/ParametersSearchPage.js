@@ -7,6 +7,11 @@ const config = require('../config.json');
 export default function ParametersSearchPage() {
 
   const [showResult, setShowResult] = useState(false);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
   const [open, setOpen] = useState(false);
 
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
@@ -150,7 +155,7 @@ const columns = [
   ]
 
   return (
-    <Fade in={true}>
+    <Fade in={show}>
     <Grid>
       <Container>
         <Box mt={20} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >

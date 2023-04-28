@@ -6,6 +6,11 @@ const config = require('../config.json');
 
 export default function AnalysisPage() {
 
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
   const [allCategories, setAllCategories] = useState([]);
   const [showResult, setShowResult] = useState(false);
   const [showResultSecond, setShowResultSecond] = useState(false);
@@ -79,115 +84,132 @@ export default function AnalysisPage() {
 
 
   return (
-    <Fade in={true}>
+    <Fade in={show}>
     <Container>
-      <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      <Box mt={5} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Analyze a Zip Code by Finding the Weighted Quintile Score of the Zip Code's Livability Parameters</Typography>
         <Divider/>
-        <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
-        <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setZipcode(e.target.value)}/>
-        <Autocomplete
-          {...defaultProps}
-          value = {category}
-          onInputChange={(event, newInputValue) => {
-            setCategory(newInputValue);
-            console.log(newInputValue);
-          }}
-          disablePortal
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Business Categories"/>}
-        />
-
-        <Typography variant="h6" fontWeight={400} mb={2} mt={2} align='center' >Preference Weight for Business Parameters</Typography>
-        <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={reviewWeight}
-                onChange={(event, newValue) => {setReviewWeight(newValue); setCountWeight(roundDecimals(1 - newValue))}}
-                step={0.01}
-                valueLabelDisplay="auto"
-                marks={[
-                  { value: 0, label: '0%'},
-                  { value: 0.5, label: 'Review Star / No. of Business'},
-                  { value: 1, label: '100%'},
-                ]}
-                min={0}
-                max={1}
-              />
+        <Typography variant="body2" fontWeight={800} mb={8} mt={2} >Enter the following parameters and search:</Typography>
+        
+        <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={5}>
+          <Box sx={{ width: 400 }} pl={6}>
+            <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setZipcode(e.target.value)}/>
+          </Box>
+          <Box sx={{ width: 400 }} pl={28}>
+            <Autocomplete
+              {...defaultProps}
+              value = {category}
+              onInputChange={(event, newInputValue) => {
+                setCategory(newInputValue);
+                console.log(newInputValue);
+              }}
+              disablePortal
+              sx={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Business Categories"/>}
+            />
             </Box>
-          </Grid>
-          <Grid item xs={3} md={3} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              Review Weight: {reviewWeight}
-            </Box>
-            <Box sx={{ width: 400 }} pl={2}>
-              Count Weight: {countWeight}
-            </Box>
-          </Grid>
-        </Grid>
-
-        <Typography variant="h6" fontWeight={400} mb={2} mt={2} align='center' >Preference Weight for Housing Parameters</Typography>
-        <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              <Slider
-                value={homeWeight}
-                onChange={(e, newValue) => {setHomeWeight(newValue); setRentWeight(roundDecimals(1 - newValue))}}
-                step={0.01}
-                valueLabelDisplay="auto"
-                marks={[
-                  { value: 0, label: '0%'},
-                  { value: 0.5, label: 'Home Price / Rent Price'},
-                  { value: 1, label: '100%'},
-                ]}
-                min={0}
-                max={1}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={3} md={3} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              Home Weight: {homeWeight}
-            </Box>
-            <Box sx={{ width: 400 }} pl={2}>
-              Rent Weight: {rentWeight}
-            </Box>
-          </Grid>
         </Grid>
 
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              <Typography variant="h6" fontWeight={400} mb={2} mt={2} >Preference for High Home Values</Typography>
-              <Box sx={{ width: 400 }} pl={2}>
+          <Grid item xs={6} md={6} align='left'>
+            <Box sx={{ width: 500 }}>
+              <Typography variant="body1" fontWeight={600} mb={2}>Preference Weight for Housing Parameters</Typography>
+              <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
+                <Grid item xs={6} md={7} align='right' >
+                  <Box sx={{ width: 320 }} pl={2}>
+                    <Slider
+                      value={homeWeight}
+                      onChange={(e, newValue) => {setHomeWeight(newValue); setRentWeight(roundDecimals(1 - newValue))}}
+                      step={0.01}
+                      valueLabelDisplay="auto"
+                      marks={[
+                        { value: 0, label: '0%'},
+                        { value: 0.5, label: 'Home Price / Rent Price'},
+                        { value: 1, label: '100%'},
+                      ]}
+                      min={0}
+                      max={1}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={3} md={4} align='right' >
+                  <Box sx={{ width: 400 }} pl={7} align='left'>
+                  <Typography variant='caption'>Home Weight: {homeWeight}</Typography>
+                  </Box>
+                  <Box sx={{ width: 400 }} pl={7} align='left'>
+                  <Typography variant='caption'>Rent Weight: {rentWeight}</Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+          <Grid item xs={6} md={6} align='left' >
+            <Box sx={{ width: 500 }}>
+              <Typography variant="body1" fontWeight={600} mb={2}>Preference Weight for Business Parameters</Typography>
+              <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
+                <Grid item xs={6} md={7} align='right' >
+                  <Box sx={{ width: 320 }} pl={2}>
+                    <Slider
+                      value={reviewWeight}
+                      onChange={(event, newValue) => {setReviewWeight(newValue); setCountWeight(roundDecimals(1 - newValue))}}
+                      step={0.01}
+                      valueLabelDisplay="auto"
+                      marks={[
+                        { value: 0, label: '0%'},
+                        { value: 0.5, label: 'Review Star / No. of Business'},
+                        { value: 1, label: '100%'},
+                      ]}
+                      min={0}
+                      max={1}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={3} md={4} align='right' >
+                  <Box sx={{ width: 400 }} pl={7} align='left'>
+                  <Typography variant='caption'>Review Weight: {reviewWeight}</Typography>
+                  </Box>
+                  <Box sx={{ width: 400 }} pl={7} align='left'>
+                  <Typography variant='caption'>Count Weight: {countWeight}</Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          </Grid>
+
+        </Grid>
+
+        <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
+          <Grid item xs={6} md={6} align='left'>
+            <Box sx={{ width: 400 }}>
+              <Typography variant="body1" fontWeight={600} mb={2} mt={2}>Preference for High Home Values</Typography>
+              <Box sx={{ width: 400 }} align='center' pl={6}>
                 <Switch
                   checked={homeValueHigh}
                   onChange={(event) => {setHomeValueHigh(event.target.checked)}}
                   inputProps={{ 'aria-label': 'controlled' }}
                 />
-                <Typography variant="p" fontWeight={400} mb={2} mt={2} >{formatBoolean(homeValueHigh)}</Typography>
+                <Typography variant="p" mb={2}>{formatBoolean(homeValueHigh)}</Typography>
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={3} md={3} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              <Typography variant="h6" fontWeight={400} mb={2} mt={2} >Preference for High Rent Values</Typography>
-              <Box sx={{ width: 400 }} pl={2}> 
+          <Grid item xs={3} md={3} align='left' >
+            <Box sx={{ width: 400 }}>
+              <Typography variant="body1" fontWeight={600} mb={2} mt={2} >Preference for High Rent Values</Typography>
+              <Box sx={{ width: 400 }} align='center' pl={6}> 
                 <Switch
                   checked={rentValueHigh}
                   onChange={(event) => {setRentValueHigh(event.target.checked)}}
                   inputProps={{ 'aria-label': 'controlled' }}
                 />
-                <Typography variant="p" fontWeight={400} mb={2} mt={2} >{formatBoolean(rentValueHigh)}</Typography>
+                <Typography variant="p" mb={2}>{formatBoolean(rentValueHigh)}</Typography>
               </Box> 
             </Box>
           </Grid>
         </Grid>
 
-        <Typography variant="h6" fontWeight={400} mb={2} mt={2} align='center' >Preference Weight for Demographics Parameters</Typography>
+        <Typography variant="body1" fontWeight={600} mb={2} mt={2} align='left' >Preference Weight for Demographics Parameters</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6} align='center' >
+          <Grid item xs={6} md={6} align='left' >
             <Box sx={{ width: 400 }} pl={2}>
               <Slider
                 value={educationWeight}
@@ -204,20 +226,20 @@ export default function AnalysisPage() {
               />
             </Box>
           </Grid>
-          <Grid item xs={3} md={3} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              Education Weight: {educationWeight}
+          <Grid item xs={4} md={3} align='left' >
+            <Box sx={{ width: 400 }}>
+              <Typography variant='caption'>Education Weight: {educationWeight}</Typography>
             </Box>
-            <Box sx={{ width: 400 }} pl={2}>
-              Age Weight: {ageWeight}
+            <Box sx={{ width: 400 }}>
+              <Typography variant='caption'>Age Weight: {ageWeight}</Typography>
             </Box>
           </Grid>
         </Grid>
 
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              <Typography variant="h6" fontWeight={400} mb={2} mt={2} >Preference for Educational Attainment</Typography>
+          <Grid item xs={6} md={6} align='left' >
+            <Box sx={{ width: 400 }}>
+              <Typography variant="body1" fontWeight={600} mb={2} mt={2} >Preference for Educational Attainment</Typography>
               <FormControl fullWidth>
                 <InputLabel id="education">Educational Attainment</InputLabel>
                 <Select
@@ -233,9 +255,9 @@ export default function AnalysisPage() {
               </FormControl>
             </Box>
           </Grid>
-          <Grid item xs={3} md={3} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              <Typography variant="h6" fontWeight={400} mb={2} mt={2} >Preference for Age Demographics</Typography>
+          <Grid item xs={3} md={3} align='left' >
+            <Box sx={{ width: 400 }}>
+              <Typography variant="body1" fontWeight={600} mb={2} mt={2} >Preference for Age Demographics</Typography>
               <FormControl fullWidth>
                 <InputLabel id="age">Age Demographics</InputLabel>
                 <Select
@@ -254,9 +276,9 @@ export default function AnalysisPage() {
           </Grid>
         </Grid>
 
-        <Typography variant="h6" fontWeight={400} mb={2} mt={2} align='center' >Preference Weight for Economics Parameters</Typography>
+        <Typography variant="body1" fontWeight={600} mb={2} mt={2} align='left' >Preference Weight for Economics Parameters</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6} align='center' >
+          <Grid item xs={6} md={6} align='left' >
             <Box sx={{ width: 400 }} pl={2}>
               <Slider
                 value={threePartSlider}
@@ -279,23 +301,25 @@ export default function AnalysisPage() {
               />
             </Box>
           </Grid>
-          <Grid item xs={3} md={3} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              Labor Force Weight: {lFRateWeight}
-            </Box>
-            <Box sx={{ width: 400 }} pl={2}>
+          <Grid item xs={6} md={6} align='left' >
+            <Box sx={{ width: 400 }}>
+              <Typography variant="caption" >Labor Force Weight: {lFRateWeight}</Typography>
+              <Typography variant="caption" pl={7}>
               Household Income Weight: {householdIncomeWeight}
+              </Typography>
             </Box>
-            <Box sx={{ width: 400 }} pl={2}>
+            <Box sx={{ width: 400 }}>
+              <Typography variant="caption" >
               Poverty Rate Weight: {povertyRateWeight}
+              </Typography>
             </Box>
           </Grid>
         </Grid>
 
-        <Typography variant="h6" fontWeight={400} mb={2} mt={2} align='center' >Preference Weight for the Scores</Typography>
+        <Typography variant="body1" fontWeight={600} mb={2} mt={2} align='left' >Preference Weight for the Scores</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
-          <Grid item xs={6} md={6} align='center' >
-            <Box sx={{ width: 400 }} pl={2} display="flex" >
+          <Grid item xs={6} md={6} align='left' >
+            <Box sx={{ width: 400 }} display="flex" pl={2} >
               <Slider
                 value={fourPartSlider}
                 onChange={(e, newValue) => {
@@ -318,19 +342,16 @@ export default function AnalysisPage() {
               />
             </Box>
           </Grid>
-          <Grid item xs={3} md={3} align='center' >
-            <Box sx={{ width: 400 }} pl={2}>
-              Business Score Weight: {businessScoreWeight}
+          <Grid item xs={3} md={3} align='left' >
+            <Box sx={{ width: 500 }}>
+            <Typography variant='caption'>Business Score Weight: {businessScoreWeight}</Typography>
+            <Typography variant='caption' pl={4.5}>Housing Score Weight: {housingScoreWeight}</Typography>
             </Box>
-            <Box sx={{ width: 400 }} pl={2}>
-              Housing Score Weight: {housingScoreWeight}
+            <Box sx={{ width: 500 }}>
+            <Typography variant='caption'>Economics Score Weight: {economicsScoreWeight}</Typography>
+            <Typography variant='caption' pl={3}>Demographics Score Weight: {demographicsScoreWeight}</Typography>
             </Box>
-            <Box sx={{ width: 400 }} pl={2}>
-              Economics Score Weight: {economicsScoreWeight}
-            </Box>
-            <Box sx={{ width: 400 }} pl={2}>
-              Demographics Score Weight: {demographicsScoreWeight}
-            </Box>
+
           </Grid>
         </Grid>
 
@@ -339,8 +360,8 @@ export default function AnalysisPage() {
         </Box>
       </Box>
 
-      {hedScoreInfo && <Fade in={showResult}>
-        <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
+      {hedScoreInfo && businessScoreInfo && <Fade in={showResultSecond}>
+      <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
           <Typography variant="h4" fontWeight={800} >Your Zipcheck Report</Typography>
           <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
             <Grid item xs={6} md={6}>
@@ -349,38 +370,58 @@ export default function AnalysisPage() {
               <Typography variant="body1">{nonNullVal(hedScoreInfo.state)}</Typography>
             </Grid>
           </Grid>
+        
+        <Divider/>
+          <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Combined Analysis & Scores</Typography>
+          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>
+                {formatScore(calcCombinedScore(
+                  businessScoreWeight, businessScoreInfo.final_weighted_score,
+                  housingScoreWeight, hedScoreInfo.final_weighted_housing_score,
+                  economicsScoreWeight, hedScoreInfo.final_economic_weighted_score,
+                  demographicsScoreWeight, hedScoreInfo.final_weighted_socio_demographic_score))}
+              </Typography>
+              <Typography variant="h6">Final Weighted Combined Score</Typography>
+              <Typography variant="body2" mb={2}>Final aggregate score after applying weights to across all housing, economics, socio-demographic scores for your zipcode, scale: 1-5</Typography>
+            </Grid>
+          </Grid>
+        </Box>
+      </Fade>}
 
+      {hedScoreInfo && <Fade in={showResult}>
+        <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
           <Divider/>
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Housing Analysis & Scores</Typography>
           <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{formatScore(hedScoreInfo.final_weighted_housing_score)}</Typography>
               <Typography variant="h6">Final Weighted Housing Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Final housing score after applying weights to home_value_score and rent_value_score, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.median_home_value)}</Typography>
+              <Typography variant="h3" mb={1}>${nonNullVal(hedScoreInfo.median_home_value)}</Typography>
               <Typography variant="h6">Median Home Value</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Median home value for a zip code</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.median_rent_value)}</Typography>
+              <Typography variant="h3" mb={1}>${nonNullVal(hedScoreInfo.median_rent_value)}</Typography>
               <Typography variant="h6">Median Rent Value</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>The quintile score for monthly rent value which is the quintile of median_rent_value of the zip code, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.home_value_score)}</Typography>
               <Typography variant="h6">Home Value Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>The quintile score for home value which is the quintile of median_home_value of the zip code, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.rent_value_score)}</Typography>
               <Typography variant="h6">Rent Value Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Median rent value for a zip code</Typography>
             </Grid>
           </Grid>
         </Box>
@@ -394,43 +435,43 @@ export default function AnalysisPage() {
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{formatScore(hedScoreInfo.final_economic_weighted_score)}</Typography>
               <Typography variant="h6">Final Economic Weighted Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Final Economic score after applying weights to labor_force_score, household_income_score and poverty_rate_score, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.labor_force_participation_rate)}</Typography>
               <Typography variant="h6">Labor Force Participation Rate</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Labor force participation rate for a zip code</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.average_household_income)}</Typography>
+              <Typography variant="h3" mb={1}>${nonNullVal(hedScoreInfo.average_household_income)}</Typography>
               <Typography variant="h6">Average Household Income</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Average household income for a zip code</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.poverty_rate)}</Typography>
               <Typography variant="h6">Poverty Rate</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Poverty rate for a zip code</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.labor_force_score)}</Typography>
               <Typography variant="h6">Labor Force Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Quintile score for labor force participation rate which is the quintile of labor_force_participation_rate of the zip code, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.household_income_score)}</Typography>
               <Typography variant="h6">Household Income Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Quintile score for household income which is the quintile of average_household_income of the zip code, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.poverty_rate_score)}</Typography>
               <Typography variant="h6">Poverty Rate Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Quintile score for poverty rate which is the quintile of poverty_rate of the zip code, scale: 1-5</Typography>
             </Grid>
           </Grid>
         </Box>
@@ -444,31 +485,31 @@ export default function AnalysisPage() {
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{formatScore(hedScoreInfo.final_weighted_socio_demographic_score)}</Typography>
               <Typography variant="h6">Final Weighted Socio Demographic Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Final Socio-Demographic score after applying weights to education_score and age_score, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.education_rate)}</Typography>
               <Typography variant="h6">Education Rate</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Education completion rate for a zip code depending on user selection: 1: High School, 2: Bachelor’s, 3: High School and Bachelor’s</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.age_range_rate)}</Typography>
               <Typography variant="h6">Age Range Rate</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Age range percentage for a zip code depending on user selection: 1 - Young: 0-18, 2 - Young Adults: 20-34, 3 - Middle-Aged Adults: 35-64 and 4 - Older People: over 65)</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.education_score)}</Typography>
               <Typography variant="h6">Education Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Quintile score for user-selected education level of the zip code, scale: 1-5</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.age_score)}</Typography>
               <Typography variant="h6">Age Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>Quintile score for user-selected age range of the zip code, scale: 1-5</Typography>
             </Grid>
           </Grid>
         </Box>
@@ -482,51 +523,31 @@ export default function AnalysisPage() {
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{formatScore(businessScoreInfo.final_weighted_score)}</Typography>
               <Typography variant="h6">Final Weighted Business Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>The final weighted score represents the livability score (out of 5) for the zip code based on the weight that users have on the average review star of the business and/or number of businesses for a particular category. 1 is the lowest and 5 is the highest.</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(businessScoreInfo.cat_avg_stars)}</Typography>
               <Typography variant="h6">Cat Average Stars</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>The average review stars of businesses in a particular category in the zip code</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(businessScoreInfo.category_count)}</Typography>
               <Typography variant="h6">Category Count</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>The number of business in a particular category in the zip code</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(businessScoreInfo.review_score)}</Typography>
               <Typography variant="h6">Reviews Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>The quintile score of the average review stars for businesses in a particular category within the zip code. This quintile score represents how average review stars of this category of businesses rank compared to that of all zip codes. Higher average review stars will result in higher quintile scores. 1 is the lowest and 5 is the highest. </Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>{nonNullVal(businessScoreInfo.cat_count_score)}</Typography>
               <Typography variant="h6">Category Count Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
-            </Grid>
-          </Grid>
-        </Box>
-      </Fade>}
-
-      {hedScoreInfo && businessScoreInfo && <Fade in={showResultSecond}>
-        <Box mt={3} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
-        <Divider/>
-          <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Combined Analysis & Scores</Typography>
-          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-            <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>
-                {formatScore(calcCombinedScore(
-                  businessScoreWeight, businessScoreInfo.final_weighted_score,
-                  housingScoreWeight, hedScoreInfo.final_weighted_housing_score,
-                  economicsScoreWeight, hedScoreInfo.final_economic_weighted_score,
-                  demographicsScoreWeight, hedScoreInfo.final_weighted_socio_demographic_score))}
-              </Typography>
-              <Typography variant="h6">Final Weighted Combined Score</Typography>
-              <Typography variant="body2" mb={2}>Score description here</Typography>
+              <Typography variant="body2" mb={2}>The quintile score of the number of businesses in a particular category within the zip code. This quintile score represents how the number of businesses in this category rank compared to that of all zip codes. Higher number of businesses will result in higher quintile scores. 1 is the lowest and 5 is the highest.</Typography>
             </Grid>
           </Grid>
         </Box>
