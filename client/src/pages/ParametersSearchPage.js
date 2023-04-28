@@ -6,11 +6,11 @@ const config = require('../config.json');
 
 export default function ParametersSearchPage() {
 
-  const [zipcodeInfo, setZipcodeInfo] = useState(null);
-  const [zipcodeButton, setZipcodeButton] = useState(null);
-
-  const [show, setShow] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const [zipcodeInfo, setZipcodeInfo] = useState(null);
+  const [zipcode, setZipcode] = useState(null);
 
   const [medianHomeValue, setMedianHomeValue] = useState([1000 , 2000000]);
   const [medianRentValue, setMedianRentValue] = useState([100, 3500]);
@@ -21,13 +21,6 @@ export default function ParametersSearchPage() {
   const [ageOver65, setAgeOver65] = useState([0, 100]);
   const [bachelorGradRate, setBachelorGradRate] = useState([0, 100]);
   const [hsGradRate, setHsGradRate] = useState([0, 100]);
-
-  const [open, setOpen] = useState(false);
-  const handleClose = () => setOpen(false);
-
-  useEffect(() => {
-    setShow(true);
-  }, []);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search`)
@@ -147,7 +140,7 @@ const columns = [
             .forEach(
               c => (thisRow[c.field] = params.getValue(params.id, c.field))
             )
-          setZipcodeButton(thisRow.zipcode);
+          setZipcode(thisRow.zipcode);
         }
         return <div> <Button variant="outlined" onClick={onClick}>Details</Button> 
         </div>
@@ -157,7 +150,7 @@ const columns = [
   ]
 
   return (
-    <Fade in={show}>
+    <Fade in={true}>
     <Grid>
       <Container>
         <Box mt={20} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
@@ -295,8 +288,7 @@ const columns = [
             columns={columns}
             paginationModel={{ page: 0, pageSize: 100 }}
           />
-          {console.log("Calling parameters search card" + zipcodeButton)}
-          {open && <ParametersSearchCard zipcode={zipcodeButton} handleClose={handleClose}></ParametersSearchCard>}
+          {open && <ParametersSearchCard zipcode={zipcode} handleClose={() => setOpen(false)}></ParametersSearchCard>}
         </div>
       </Box>
       </Fade>}
