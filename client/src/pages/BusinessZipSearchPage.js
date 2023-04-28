@@ -23,7 +23,7 @@ export default function BusinessZipSearchPage() {
   const columns = [
     { field: 'name', headerName: 'Name', width: 220 },
     { field: 'address', headerName: 'Address', width: 200 },
-    { field: 'business_category_list', headerName: 'Name', width: 450 },
+    { field: 'business_category_list', headerName: 'Business Categories', width: 450 },
     { field: 'review_stars', headerName: 'Review stars', width: 100 },
     { field: 'review_count', headerName: '# of Reviews', width: 100 }
   ]
