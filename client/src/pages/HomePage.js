@@ -8,6 +8,11 @@ const config = require('../config.json');
 
 export default function HomePage() {
   
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
   const navigate = useNavigate();
   const handleClick = (url) => { navigate(url);};
 
@@ -20,7 +25,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <Fade in={true}>
+    <Fade in={show}>
     <Grid>
       <Box m={7} display="flex"
       justifyContent="center"
@@ -66,7 +71,7 @@ export default function HomePage() {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Housing</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
           <Grid item xs={6} md={6}>
-          <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_home_value)}</Typography>
+          <Typography variant="h3" mb={1}>${nonNullVal(stats.avg_us_home_value)}</Typography>
           <Typography variant="h6">Average US home value</Typography>
           <Typography variant="body2" mb={2}>Mean home value across all US zip codes</Typography>
           </Grid>
@@ -78,7 +83,7 @@ export default function HomePage() {
           </Grid>
 
           <Grid item xs={6} md={6}>
-          <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_household_income)}</Typography>
+          <Typography variant="h3" mb={1}>${nonNullVal(stats.avg_us_household_income)}</Typography>
           <Typography variant="h6">Average US household income</Typography>
           <Typography variant="body2" mb={2}>Mean household income across all US zip codes</Typography>
           </Grid>
@@ -96,12 +101,14 @@ export default function HomePage() {
           </Grid>
 
           <Grid item xs={6} md={6}>
-          <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_rent_value)}</Typography>
+          <Typography variant="h3" mb={1}>${nonNullVal(stats.avg_us_rent_value)}</Typography>
           <Typography variant="h6">Average US rent value</Typography>
           <Typography variant="body2" mb={2}>Mean rent value across all US zip codes</Typography>
           </Grid>
         </Grid>
+        </Box>
 
+        <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Divider/>
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Education</Typography>
         <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
@@ -123,6 +130,9 @@ export default function HomePage() {
           <Typography variant="body2" mb={2}>Average US combined bachelor percentage across all US zip codes</Typography>
           </Grid>
         </Grid>
+        </Box>
+
+        <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
 
         <Divider/>
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Age Demographics</Typography>
@@ -151,6 +161,9 @@ export default function HomePage() {
           <Typography variant="body2" mb={2}>Mean senior percentage across all US zip codes</Typography>
           </Grid>
         </Grid>
+        </Box>
+
+        <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
 
         <Divider/>
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Race Demographics</Typography>

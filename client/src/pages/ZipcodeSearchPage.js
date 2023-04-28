@@ -6,10 +6,16 @@ const config = require('../config.json');
 
 export default function ZipcodeSearchPage() {
 
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
   const [showResult, setShowResult] = useState(false);
   
   const [zipcode, setZipcode] = useState(null);
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
+
 
   const zipcodeSearchRoute = () => {
     fetch(`http://${config.server_host}:${config.server_port}/zipcode/${zipcode}`)
@@ -22,7 +28,7 @@ export default function ZipcodeSearchPage() {
   };
 
   return (
-    <Fade in={true}>
+    <Fade in={show}>
     <Container>
       <Box mt={35} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
         <Typography variant="h5" fontWeight={800} mb={2}>Find all housing, demographics, and economic info for a particular zip code</Typography>
@@ -74,7 +80,7 @@ export default function ZipcodeSearchPage() {
           </Grid>
 
           <Grid item xs={6} md={6}>
-            <Typography variant="h3" mb={1}>{nonNullVal(zipcodeInfo.average_household_income)}</Typography>
+            <Typography variant="h3" mb={1}>${nonNullVal(zipcodeInfo.average_household_income)}</Typography>
             <Typography variant="h6">Average Household Income</Typography>
             <Typography variant="body2" mb={2}>The average household income in the zip code</Typography>
           </Grid>
@@ -120,13 +126,13 @@ export default function ZipcodeSearchPage() {
           </Grid>
 
           <Grid item xs={6} md={6}>
-            <Typography variant="h3" mb={1}>{nonNullVal(zipcodeInfo.median_home_value)}</Typography>
+            <Typography variant="h3" mb={1}>${nonNullVal(zipcodeInfo.median_home_value)}</Typography>
             <Typography variant="h6">Median Home Value</Typography>
             <Typography variant="body2" mb={2}>The median home value in the zip code</Typography>
           </Grid>
 
           <Grid item xs={6} md={6}>
-            <Typography variant="h3" mb={1}>{nonNullVal(zipcodeInfo.median_rent_value)}</Typography>
+            <Typography variant="h3" mb={1}>${nonNullVal(zipcodeInfo.median_rent_value)}</Typography>
             <Typography variant="h6">Median Rent Value</Typography>
             <Typography variant="body2" mb={2}>The median rent value in the zip code</Typography>
           </Grid>
