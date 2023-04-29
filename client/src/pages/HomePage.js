@@ -61,15 +61,15 @@ export default function HomePage() {
   const eduData = stats
     ? [
         {
-          name: "Average US bachelor grad percantage",
+          name: "Average US bachelor grad",
           value: stats.avg_us_bachelor_grad_percentage,
         },
         {
-          name: "Average US hs grad percentage",
+          name: "Average US hs grad",
           value: stats.avg_us_hs_grad_percentage,
         },
         {
-          name: "Average US combined bachelor hs percentage",
+          name: "Average US combined bachelor hs",
           value: stats.avg_us_combined_bachelor_hs_percentage,
         },
       ]
@@ -78,19 +78,19 @@ export default function HomePage() {
   const ageData = stats
     ? [
         {
-          name: "Average US children percentage",
+          name: "Average US children",
           value: stats.avg_us_children_percentage,
         },
         {
-          name: "Mean young adult percentage across all US zip codes",
+          name: "Mean young adult ",
           value: stats.avg_us_young_adults_percentage,
         },
         {
-          name: "Average US middle age percentage",
+          name: "Average US middle age",
           value: stats.avg_us_middle_age_percentage,
         },
         {
-          name: "Average US seniors percentage",
+          name: "Average US seniors",
           value: stats.avg_us_seniors_percentage,
         },
       ]
@@ -314,11 +314,11 @@ export default function HomePage() {
           {/* Education Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
-            Education Demographics
+            Education Demographics accross all Zipcodes
           </Typography>
           <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
             <BarChart
-              width={1000}
+              width={400 + eduData.length * 100}
               height={1000}
               data={eduData}
               margin={{ top: 5, right: 30, left: 20, bottom: 180 }}
@@ -331,9 +331,15 @@ export default function HomePage() {
                 tick={{ fontSize: 15 }}
                 // label={{ value: "Education", position: "bottom", offset: 0 }}
               />
-              <YAxis />
+              <YAxis
+                domain={[0, 1]}
+                tickFormatter={(tick) => `${(tick * 100).toFixed(2)}%`}
+              />{" "}
               <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
+              <Tooltip
+                formatter={(value) => `${(value * 100).toFixed(2)}%`}
+                labelFormatter={(label) => `${(label * 100).toFixed(0)}%`}
+              />{" "}
               <Legend />
               <Bar dataKey="value" name="Education" fill="#8884d8" barSize={80}>
                 {eduData.map((entry, index) => (
@@ -342,7 +348,11 @@ export default function HomePage() {
                     fill={COLORS[index % COLORS.length]}
                   />
                 ))}
-                <LabelList dataKey="value" position="top" />
+                <LabelList
+                  dataKey="value"
+                  position="top"
+                  formatter={(value) => `${(value * 100).toFixed(2)}%`}
+                />
               </Bar>
             </BarChart>
           </Grid>
@@ -350,11 +360,11 @@ export default function HomePage() {
           {/* Race Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
-            Race Demographics
+            Race Demographics accross all Zipcodes
           </Typography>
           <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
             <BarChart
-              width={1000}
+              width={400 + raceData.length * 100}
               height={800}
               data={raceData}
               margin={{ top: 5, right: 30, left: 20, bottom: 100 }}
@@ -367,9 +377,15 @@ export default function HomePage() {
                 tick={{ fontSize: 15 }}
                 // label={{ value: "Race", position: "bottom", offset: 0 }}
               />
-              <YAxis />
+              <YAxis
+                domain={[0, 1]}
+                tickFormatter={(tick) => `${(tick * 100).toFixed(0)}%`}
+              />{" "}
               <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
+              <Tooltip
+                formatter={(value) => `${(value * 100).toFixed(2)}%`}
+                labelFormatter={(label) => `${(label * 100).toFixed(0)}%`}
+              />{" "}
               <Legend />
               <Bar dataKey="value" name="Race" fill="#8884d8" barSize={80}>
                 {raceData.map((entry, index) => (
@@ -381,7 +397,7 @@ export default function HomePage() {
                 <LabelList
                   dataKey="value"
                   position="top"
-                  formatter={(value) => `${(value * 100).toFixed(0)}%`}
+                  formatter={(value) => `${(value * 100).toFixed(2)}%`}
                 />
               </Bar>
             </BarChart>
@@ -391,15 +407,15 @@ export default function HomePage() {
           {/* Age  Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
-            Age Demographics
+            Age Demographics accross all Zipcodes
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Grid container spacing={2} mb={2}>
               <BarChart
-                width={1000}
+                width={400 + ageData.length * 100}
                 height={800}
                 data={ageData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 130 }}
+                margin={{ top: 5, right: 30, left: 20, bottom: 150 }}
               >
                 <XAxis
                   dataKey="name"
@@ -409,9 +425,15 @@ export default function HomePage() {
                   tick={{ fontSize: 15 }}
                   // label={{ value: "Age", position: "bottom", offset: 0 }}
                 />
-                <YAxis />
+                <YAxis
+                  domain={[0, 1]}
+                  tickFormatter={(tick) => `${(tick * 100).toFixed(0)}%`}
+                />
                 <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
+                <Tooltip
+                  formatter={(value) => `${(value * 100).toFixed(2)}%`}
+                  labelFormatter={(label) => `${(label * 100).toFixed(2)}%`}
+                />{" "}
                 <Legend />
                 <Bar
                   dataKey="value"
@@ -425,7 +447,11 @@ export default function HomePage() {
                       fill={COLORS[index % COLORS.length]}
                     />
                   ))}
-                  <LabelList dataKey="value" position="top" />
+                  <LabelList
+                    dataKey="value"
+                    formatter={(value) => `${(value * 100).toFixed(2)}%`}
+                    position="top"
+                  />
                 </Bar>
               </BarChart>
             </Grid>

@@ -150,7 +150,7 @@ export default function RankingsPage() {
             </Typography>
             <Divider />
             <BarChart
-              width={800}
+              width={100 + 10 * 100}
               height={500}
               data={zipBusinessInfo
                 .sort((a, b) => b.num_business - a.num_business)
@@ -173,7 +173,7 @@ export default function RankingsPage() {
             </Typography>
             <Divider />
             <BarChart
-              width={800}
+              width={100 + 10 * 100}
               height={500}
               data={zipBusinessInfo
                 .sort((a, b) => b.avg_review_star - a.avg_review_star)
