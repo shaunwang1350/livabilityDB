@@ -1,11 +1,28 @@
-import { useEffect, useState } from 'react';
-import { Container, Box, Button, Typography, Divider, Grid, Slider, Fade} from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import ParametersSearchCard from '../components/ParametersSearchCard';
-const config = require('../config.json');
+import { useEffect, useState } from "react";
+import {
+  Container,
+  Box,
+  Button,
+  Typography,
+  Divider,
+  Grid,
+  Slider,
+  Fade,
+} from "@mui/material";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+} from "recharts";
+import { DataGrid } from "@mui/x-data-grid";
+import ParametersSearchCard from "../components/ParametersSearchCard";
+const config = require("../config.json");
 
 export default function ParametersSearchPage() {
-
   const [showResult, setShowResult] = useState(false);
   const [show, setShow] = useState(false);
   useEffect(() => {
@@ -17,7 +34,7 @@ export default function ParametersSearchPage() {
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
   const [zipcode, setZipcode] = useState(null);
 
-  const [medianHomeValue, setMedianHomeValue] = useState([1000 , 2000000]);
+  const [medianHomeValue, setMedianHomeValue] = useState([1000, 2000000]);
   const [medianRentValue, setMedianRentValue] = useState([100, 3500]);
   const [avgHouseholdIncome, setAvgHouseholdIncome] = useState([2500, 250000]);
   const [ageUnder18, setAgeUnder18] = useState([0, 100]);
@@ -27,31 +44,137 @@ export default function ParametersSearchPage() {
   const [bachelorGradRate, setBachelorGradRate] = useState([0, 100]);
   const [hsGradRate, setHsGradRate] = useState([0, 100]);
 
+  const [top10Zipcodes, setTop10Zipcodes] = useState(null);
+
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search`)
-      .then(res => res.json())
-      .then(resJson => {
-        const zipcodeInfo = resJson.map((info) => ({ id: info.zipcode, ...info })); 
-        setZipcodeInfo(zipcodeInfo)});
+      .then((res) => res.json())
+      .then((resJson) => {
+        const zipcodeInfo = resJson.map((info) => ({
+          id: info.zipcode,
+          ...info,
+        }));
+        setZipcodeInfo(zipcodeInfo);
+      });
   }, []);
 
   const search = () => {
-    fetch(`http://${config.server_host}:${config.server_port}/search` + 
-    `?median_home_value_low=${medianHomeValue[0]}&median_home_value_high=${medianHomeValue[1]}` +
-    `&median_rent_value_low=${medianRentValue[0]}&median_rent_value_high=${medianRentValue[1]}` +
-    `&avg_household_income_low=${avgHouseholdIncome[0]}&avg_household_income_high=${avgHouseholdIncome[1]}` +
-    `&age_under_18_low=${ageUnder18[0]}&age_under_18_high=${ageUnder18[1]}` +
-    `&age_range_20_34_low=${ageRange20_34[0]}&age_range_20_34_high=${ageRange20_34[1]}` +
-    `&age_range_35_64_low=${ageRange35_64[0]}&age_range_35_64_high=${ageRange35_64[1]}` +
-    `&age_over_65_low=${ageOver65[0]}&age_over_65_high=${ageOver65[1]}` +
-    `&bachelor_grad_rate_low=${bachelorGradRate[0]}&bachelor_grad_rate_high=${bachelorGradRate[1]}` +
-    `&hs_grad_rate_low=${hsGradRate[0]}&hs_grad_rate_high=${hsGradRate[1]}`)
-      .then(res => res.json())
-      .then(resJson => {
-        const zipcodeInfo = resJson.map((info) => ({ id: info.zipcode, ...info })); 
-        setZipcodeInfo(zipcodeInfo)});
+    fetch(
+      `http://${config.server_host}:${config.server_port}/search` +
+        `?median_home_value_low=${medianHomeValue[0]}&median_home_value_high=${medianHomeValue[1]}` +
+        `&median_rent_value_low=${medianRentValue[0]}&median_rent_value_high=${medianRentValue[1]}` +
+        `&avg_household_income_low=${avgHouseholdIncome[0]}&avg_household_income_high=${avgHouseholdIncome[1]}` +
+        `&age_under_18_low=${ageUnder18[0]}&age_under_18_high=${ageUnder18[1]}` +
+        `&age_range_20_34_low=${ageRange20_34[0]}&age_range_20_34_high=${ageRange20_34[1]}` +
+        `&age_range_35_64_low=${ageRange35_64[0]}&age_range_35_64_high=${ageRange35_64[1]}` +
+        `&age_over_65_low=${ageOver65[0]}&age_over_65_high=${ageOver65[1]}` +
+        `&bachelor_grad_rate_low=${bachelorGradRate[0]}&bachelor_grad_rate_high=${bachelorGradRate[1]}` +
+        `&hs_grad_rate_low=${hsGradRate[0]}&hs_grad_rate_high=${hsGradRate[1]}`
+    )
+      .then((res) => res.json())
+      .then((resJson) => {
+        const zipcodeInfo = resJson.map((info) => ({
+          id: info.zipcode,
+          ...info,
+        }));
 
-        setShowResult(true);
+        // const zipcodesWithData = zipcodeInfo.filter((zipcode) => {
+        //   return (
+        //     zipcode.median_home_value !== null &&
+        //     zipcode.median_rent_value !== null &&
+        //     zipcode.average_household_income !== null &&
+        //     zipcode.age_under_18 !== null &&
+        //     zipcode.age_range_20_34 !== null &&
+        //     zipcode.age_range_35_64 !== null &&
+        //     zipcode.age_over_65 !== null &&
+        //     zipcode.bachelor_grad_rate !== null
+        //   );
+        // });
+        // Get the top 10 zipcodes for median_home_value
+        const top10MedianHomeValue = zipcodeInfo
+          .filter((zipcode) => zipcode.median_home_value !== null) // filter out zipcodes with null median home value
+          .sort((a, b) => b.median_home_value - a.median_home_value)
+          .slice(0, 10);
+        const top10ZipcodesMedianRentValue = zipcodeInfo
+          .filter((zipcode) => zipcode.median_rent_value !== null) // filter out zipcodes with null median home value
+          .sort((a, b) => b.median_rent_value - a.median_rent_value)
+          .slice(0, 10);
+
+        const top10ZipcodesAvgHouseholdIncome = zipcodeInfo
+          .filter((zipcode) => zipcode.average_household_income !== null) // filter out zipcodes with null median home value
+          .sort(
+            (a, b) => b.average_household_income - a.average_household_income
+          )
+          .slice(0, 10);
+        const top10ZipcodesAgeUnder18 = zipcodeInfo
+          .filter((zipcode) => zipcode.age_under_18 !== null) // filter out zipcodes with null median home value
+          .sort((a, b) => b.age_under_18 - a.age_under_18)
+          .slice(0, 10);
+        const top10ZipcodesAgeRange20_34 = zipcodeInfo
+          .filter((zipcode) => zipcode.age_range_20_34 !== null) // filter out zipcodes with null median home value
+          .sort((a, b) => b.age_range_20_34 - a.age_range_20_34)
+          .slice(0, 10);
+
+        const top10ZipcodesAgeRange35_64 = zipcodeInfo
+          .filter((zipcode) => zipcode.age_range_35_64 !== null) // filter out zipcodes with null median home value
+          .sort((a, b) => b.age_range_35_64 - a.age_range_35_64)
+          .slice(0, 10);
+        const top10ZipcodesAgeOver65 = zipcodeInfo
+          .filter((zipcode) => zipcode.age_over_65 !== null) // filter out zipcodes with null median home value
+          .sort((a, b) => b.age_over_65 - a.age_over_65)
+          .slice(0, 10);
+        const top10ZipcodesBachelorGradRate = zipcodeInfo
+          .filter((zipcode) => zipcode.bachelor_grad_rate !== null) // filter out zipcodes with null median home value
+          .sort((a, b) => b.bachelor_grad_rate - a.bachelor_grad_rate)
+          .slice(0, 10);
+
+        setTop10Zipcodes([
+          {
+            category: "Median Home Value",
+            data: top10MedianHomeValue,
+            dataKey: "median_home_value",
+          },
+          {
+            category: "Median Rent Value",
+            data: top10ZipcodesMedianRentValue,
+            dataKey: "median_rent_value",
+          },
+          {
+            category: "Average Household Income",
+            data: top10ZipcodesAvgHouseholdIncome,
+            dataKey: "average_household_income",
+          },
+          {
+            category: "Age Under 18",
+            data: top10ZipcodesAgeUnder18,
+            dataKey: "age_under_18",
+          },
+          {
+            category: "Age Range 20-34",
+            data: top10ZipcodesAgeRange20_34,
+            dataKey: "age_range_20_34",
+          },
+          {
+            category: "Age Range 35-64",
+            data: top10ZipcodesAgeRange35_64,
+            dataKey: "age_range_35_64",
+          },
+          {
+            category: "Age Over 65",
+            data: top10ZipcodesAgeOver65,
+            dataKey: "age_over_65",
+          },
+          {
+            category: "Bachelor Grad Rate",
+            data: top10ZipcodesBachelorGradRate,
+            dataKey: "bachelor_grad_rate",
+          },
+        ]);
+
+        setZipcodeInfo(zipcodeInfo);
+      });
+
+    setShowResult(true);
     console.log(medianHomeValue);
     console.log(medianRentValue);
     console.log(avgHouseholdIncome);
@@ -62,242 +185,328 @@ export default function ParametersSearchPage() {
     console.log(bachelorGradRate);
     console.log(hsGradRate);
     console.log(zipcodeInfo);
-  }
+  };
 
   const marksMedianHomeValue = [
-    { value: 1000, label: '$10000'},
-    { value: 1005000, label: 'Median Home Value'},
-    { value: 2000000, label: '$2000000'},
+    { value: 1000, label: "$10000" },
+    { value: 1005000, label: "Median Home Value" },
+    { value: 2000000, label: "$2000000" },
   ];
 
   const marksMedianRentValue = [
-    { value: 100, label: '$100'},
-    { value: 1800, label: 'Median Rent Value'},
-    { value: 3500, label: '$3500'},
+    { value: 100, label: "$100" },
+    { value: 1800, label: "Median Rent Value" },
+    { value: 3500, label: "$3500" },
   ];
 
   const marksAvgHouseholdIncome = [
-    { value: 2500, label: '$2500'},
-    { value: 126250, label: 'Avg Household Income'},
-    { value: 250000, label: '$250000'},
+    { value: 2500, label: "$2500" },
+    { value: 126250, label: "Avg Household Income" },
+    { value: 250000, label: "$250000" },
   ];
 
   const marksAgeUnder18 = [
-    { value: 0, label: '0%'},
-    { value: 50, label: 'Age Under 18'},
-    { value: 100, label: '100%'},
+    { value: 0, label: "0%" },
+    { value: 50, label: "Age Under 18" },
+    { value: 100, label: "100%" },
   ];
 
   const marksAgeRange20_34 = [
-    { value: 0, label: '0%'},
-    { value: 50, label: 'Age 20-34'},
-    { value: 100, label: '100%'},
+    { value: 0, label: "0%" },
+    { value: 50, label: "Age 20-34" },
+    { value: 100, label: "100%" },
   ];
 
   const marksAgeRange35_64 = [
-    { value: 0, label: '0%'},
-    { value: 50, label: 'Age 35-64'},
-    { value: 100, label: '100%'},
+    { value: 0, label: "0%" },
+    { value: 50, label: "Age 35-64" },
+    { value: 100, label: "100%" },
   ];
 
   const marksAgeOver65 = [
-    { value: 0, label: '0%'},
-    { value: 50, label: 'Age Over 65'},
-    { value: 100, label: '100%'},
+    { value: 0, label: "0%" },
+    { value: 50, label: "Age Over 65" },
+    { value: 100, label: "100%" },
   ];
 
   const marksBachelorGradRate = [
-    { value: 0, label: '0%'},
-    { value: 50, label: 'Bachelor Grad Rate'},
-    { value: 100, label: '100%'},
+    { value: 0, label: "0%" },
+    { value: 50, label: "Bachelor Grad Rate" },
+    { value: 100, label: "100%" },
   ];
 
   const marksHsGradRate = [
-    { value: 0, label: '0%'},
-    { value: 50, label: 'High School Grad Rate'},
-    { value: 100, label: '100%'},
+    { value: 0, label: "0%" },
+    { value: 50, label: "High School Grad Rate" },
+    { value: 100, label: "100%" },
   ];
 
-const columns = [
-  { field: "zipcode", headerName: "Zipcode", width: 100 },
-  { field: "city", headerName: "City", width: 120 },
-  { field: "state", headerName: "State", width: 70 },
-  { field: "total_population", headerName: "Total population", width: 120 },
-  { field: "median_age", headerName: "Median age", width: 100 },
-  { field: "combined_bachelor_hs_rate", headerName: "Bachelor/HS Grad rate", width: 170 },
-  { field: "average_household_income", headerName: "Avg Household Income", width: 170 },
-  { field: "unemployment_rate", headerName: "Unemployment Rate", width: 150 },
-  { field: "median_rent_value", headerName: "Median Rent Value", width: 140 },
-  { field: "poverty_rate", headerName: "Poverty Rate", width: 100 },
-  { field: "total_house_units", headerName: "Total House Units", width: 150 },
+  const columns = [
+    { field: "zipcode", headerName: "Zipcode", width: 100 },
+    { field: "city", headerName: "City", width: 120 },
+    { field: "state", headerName: "State", width: 70 },
+    { field: "total_population", headerName: "Total population", width: 120 },
+    { field: "median_age", headerName: "Median age", width: 100 },
+    {
+      field: "combined_bachelor_hs_rate",
+      headerName: "Bachelor/HS Grad rate",
+      width: 170,
+    },
+    {
+      field: "average_household_income",
+      headerName: "Avg Household Income",
+      width: 170,
+    },
+    { field: "unemployment_rate", headerName: "Unemployment Rate", width: 150 },
+    { field: "median_rent_value", headerName: "Median Rent Value", width: 140 },
+    { field: "poverty_rate", headerName: "Poverty Rate", width: 100 },
+    { field: "total_house_units", headerName: "Total House Units", width: 150 },
     {
       field: "action",
       headerName: "Details",
-      renderCell: params => {  
+      renderCell: (params) => {
         const onClick = (e) => {
           e.stopPropagation();
           setOpen(true);
-          const api = params.api
-          const thisRow = {}
+          const api = params.api;
+          const thisRow = {};
           api
             .getAllColumns()
-            .filter(c => c.field !== "__check__" && !!c)
+            .filter((c) => c.field !== "__check__" && !!c)
             .forEach(
-              c => (thisRow[c.field] = params.getValue(params.id, c.field))
-            )
+              (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
+            );
           setZipcode(thisRow.zipcode);
-        }
-        return <div> <Button variant="outlined" onClick={onClick}>Details</Button> 
-        </div>
+        };
+        return (
+          <div>
+            {" "}
+            <Button variant="outlined" onClick={onClick}>
+              Details
+            </Button>
+          </div>
+        );
       },
-      width:120
-    }
-  ]
+      width: 120,
+    },
+  ];
 
   return (
     <Fade in={show}>
-    <Grid>
-      <Container>
-        <Box mt={20} mb={3} p={3} sx={{ background: 'black', borderRadius: '16px', boxShadow: 24}} >
-          <Typography variant="h5" fontWeight={800} mb={2}>Search for Zip Codes based on Livability Parameters</Typography>
-          <Divider/>
-          <Typography variant="body2" fontWeight={800} mb={2} mt={2} >Enter the following parameters and search:</Typography>
-          
-          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={medianHomeValue}
-                  onChange={(e, newValue) => setMedianHomeValue(newValue)}
-                  valueLabelDisplay="auto"
-                  marks={marksMedianHomeValue}
-                  min={1000}
-                  max={2000000}
-                />
-              </Box>
+      <Grid>
+        <Container>
+          <Box
+            mt={20}
+            mb={3}
+            p={3}
+            sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }}
+          >
+            <Typography variant="h5" fontWeight={800} mb={2}>
+              Search for Zip Codes based on Livability Parameters
+            </Typography>
+            <Divider />
+            <Typography variant="body2" fontWeight={800} mb={2} mt={2}>
+              Enter the following parameters and search:
+            </Typography>
+
+            <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={medianHomeValue}
+                    onChange={(e, newValue) => setMedianHomeValue(newValue)}
+                    valueLabelDisplay="auto"
+                    marks={marksMedianHomeValue}
+                    min={1000}
+                    max={2000000}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={medianRentValue}
+                    onChange={(e, newValue) => setMedianRentValue(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksMedianRentValue}
+                    min={100}
+                    max={3500}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={avgHouseholdIncome}
+                    onChange={(e, newValue) => setAvgHouseholdIncome(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksAvgHouseholdIncome}
+                    min={2500}
+                    max={250000}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={ageUnder18}
+                    onChange={(e, newValue) => setAgeUnder18(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksAgeUnder18}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={ageRange20_34}
+                    onChange={(e, newValue) => setAgeRange20_34(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksAgeRange20_34}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={ageRange35_64}
+                    onChange={(e, newValue) => setAgeRange35_64(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksAgeRange35_64}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={ageOver65}
+                    onChange={(e, newValue) => setAgeOver65(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksAgeOver65}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={bachelorGradRate}
+                    onChange={(e, newValue) => setBachelorGradRate(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksBachelorGradRate}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={6} md={6}>
+                <Box sx={{ width: 400 }} pl={2}>
+                  <Slider
+                    value={hsGradRate}
+                    onChange={(e, newValue) => setHsGradRate(newValue)}
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks={marksHsGradRate}
+                  />
+                </Box>
+              </Grid>
             </Grid>
 
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={medianRentValue}
-                  onChange={(e, newValue) => setMedianRentValue(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksMedianRentValue}
-                  min={100}
-                  max={3500}
-                />
-              </Box>
-            </Grid>
-
-      
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={avgHouseholdIncome}
-                  onChange={(e, newValue) => setAvgHouseholdIncome(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksAvgHouseholdIncome}
-                  min={2500}
-                  max={250000}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={ageUnder18}
-                  onChange={(e, newValue) => setAgeUnder18(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksAgeUnder18}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={ageRange20_34}
-                  onChange={(e, newValue) => setAgeRange20_34(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksAgeRange20_34}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={ageRange35_64}
-                  onChange={(e, newValue) => setAgeRange35_64(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksAgeRange35_64}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={ageOver65}
-                  onChange={(e, newValue) => setAgeOver65(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksAgeOver65}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={bachelorGradRate}
-                  onChange={(e, newValue) => setBachelorGradRate(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksBachelorGradRate}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Box sx={{ width: 400 }} pl={2}>
-                <Slider
-                  value={hsGradRate}
-                  onChange={(e, newValue) => setHsGradRate(newValue)}
-                  step={1}
-                  valueLabelDisplay="auto"
-                  marks={marksHsGradRate}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-
-          <Box m={1} display="flex" justifyContent="flex-end" alignItems="flex-end">
-            <Button variant="outlined" onClick={() => search() } sx={{ height: 40 }}> Search </Button>
+            <Box
+              m={1}
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="flex-end"
+            >
+              <Button
+                variant="outlined"
+                onClick={() => search()}
+                sx={{ height: 40 }}
+              >
+                {" "}
+                Search{" "}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Container>
+        </Container>
 
-      {zipcodeInfo && <Fade in={showResult}>
-      <Box mt={10} mb={3} p={3} ml={5} mr={5} sx={{ background: 'black', borderRadius: '16px', display: 'flex', boxShadow: 24}} >
-        <div style={{ height: 1000, width: '100%' }}>
-          <DataGrid
-            rows={zipcodeInfo}
-            columns={columns}
-            paginationModel={{ page: 0, pageSize: 100 }}
-          />
-          {open && <ParametersSearchCard zipcode={zipcode} handleClose={() => setOpen(false)}></ParametersSearchCard>}
-        </div>
-      </Box>
-      </Fade>}
-    </Grid>
+        {zipcodeInfo && (
+          <Fade in={showResult}>
+            <Box
+              mt={10}
+              mb={3}
+              p={3}
+              ml={5}
+              mr={5}
+              sx={{
+                background: "black",
+                borderRadius: "16px",
+                display: "flex",
+                boxShadow: 24,
+              }}
+            >
+              <div style={{ height: 1000, width: "100%" }}>
+                <DataGrid
+                  rows={zipcodeInfo}
+                  columns={columns}
+                  paginationModel={{ page: 0, pageSize: 100 }}
+                />
+                {open && (
+                  <ParametersSearchCard
+                    zipcode={zipcode}
+                    handleClose={() => setOpen(false)}
+                  ></ParametersSearchCard>
+                )}
+              </div>
+            </Box>
+          </Fade>
+        )}
+        {showResult && top10Zipcodes && (
+          <Box my={5}>
+            {top10Zipcodes.map((categoryData) => (
+              <div key={categoryData.category}>
+                {categoryData.data.length > 0 && (
+                  <>
+                    <Typography variant="h6" align="center" mb={2}>
+                      Top 10 Zipcodes by {categoryData.category}
+                    </Typography>
+                    <Box display="flex" justifyContent="center">
+                      <BarChart
+                        width={800}
+                        height={400}
+                        data={categoryData.data}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="zipcode" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar
+                          dataKey={categoryData.dataKey}
+                          fill="#8884d8"
+                          name={categoryData.name}
+                        />
+                      </BarChart>
+                    </Box>
+                  </>
+                )}
+              </div>
+            ))}
+          </Box>
+        )}
+      </Grid>
     </Fade>
   );
-};
+}
