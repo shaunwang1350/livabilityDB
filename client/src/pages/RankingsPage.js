@@ -50,8 +50,8 @@ export default function RankingsPage() {
     { field: "zipcode", headerName: "Zipcode", width: 100 },
     { field: "state", headerName: "State", width: 100 },
     { field: "city", headerName: "City", width: 300 },
-    { field: "num_business", headerName: "# of Businesses", width: 200 },
     { field: "avg_review_star", headerName: "Avg Star Reviews", width: 200 },
+    { field: "num_business", headerName: "# of Businesses", width: 200 },
   ];
 
   const searchTopBusinessZipcode = () => {

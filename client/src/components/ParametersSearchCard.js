@@ -52,7 +52,7 @@ export default function ParametersSearchCard({zipcode, handleClose}) {
             <Grid item xs={6} md={6}>
               <Typography variant="body1" align="right">{nonNullVal(zipcodeInfo.timezone)}</Typography>
               <Typography variant="body1" align="right">{nonNullVal(zipcodeInfo.latitude)}</Typography>
-              <Typography variant="body1" align="right">{nonNullVal(zipcodeInfo.longitutde)}</Typography>
+              <Typography variant="body1" align="right">{nonNullVal(zipcodeInfo.longitude)}</Typography>
             </Grid>
           </Grid>
   
@@ -139,18 +139,6 @@ export default function ParametersSearchCard({zipcode, handleClose}) {
           <Divider/>
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>Education</Typography>
           <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-            <Grid item xs={3} md={2}>
-              <Typography variant="h3" mb={1}>{nonNullVal(zipcodeInfo.pop_with_high_school)}</Typography>
-              <Typography variant="h6">Pop with high school</Typography>
-              <Typography variant="body2" mb={2}>The population of high school grads in the zip code</Typography>
-            </Grid>
-  
-            <Grid item xs={3} md={2}>
-              <Typography variant="h3" mb={1}>{nonNullVal(zipcodeInfo.pop_with_bachelor)}</Typography>
-              <Typography variant="h6">Pop with bachelor</Typography>
-              <Typography variant="body2" mb={2}>The population of people with bachelor’s degrees in the zip code</Typography>
-            </Grid>
-  
             <Grid item xs={3} md={2}>
               <Typography variant="h3" mb={1}>{nonNullVal(zipcodeInfo.hs_grad_rate)}</Typography>
               <Typography variant="h6">HS grad rate</Typography>

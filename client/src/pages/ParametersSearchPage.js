@@ -9,15 +9,6 @@ import {
   Slider,
   Fade,
 } from "@mui/material";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  CartesianGrid,
-} from "recharts";
 import { DataGrid } from "@mui/x-data-grid";
 import ParametersSearchCard from "../components/ParametersSearchCard";
 const config = require("../config.json");
@@ -43,8 +34,6 @@ export default function ParametersSearchPage() {
   const [ageOver65, setAgeOver65] = useState([0, 100]);
   const [bachelorGradRate, setBachelorGradRate] = useState([0, 100]);
   const [hsGradRate, setHsGradRate] = useState([0, 100]);
-
-  const [top10Zipcodes, setTop10Zipcodes] = useState(null);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search`)
@@ -77,99 +66,6 @@ export default function ParametersSearchPage() {
           id: info.zipcode,
           ...info,
         }));
-
-        // const zipcodesWithData = zipcodeInfo.filter((zipcode) => {
-        //   return (
-        //     zipcode.median_home_value !== null &&
-        //     zipcode.median_rent_value !== null &&
-        //     zipcode.average_household_income !== null &&
-        //     zipcode.age_under_18 !== null &&
-        //     zipcode.age_range_20_34 !== null &&
-        //     zipcode.age_range_35_64 !== null &&
-        //     zipcode.age_over_65 !== null &&
-        //     zipcode.bachelor_grad_rate !== null
-        //   );
-        // });
-        // Get the top 10 zipcodes for median_home_value
-        const top10MedianHomeValue = zipcodeInfo
-          .filter((zipcode) => zipcode.median_home_value !== null) // filter out zipcodes with null median home value
-          .sort((a, b) => b.median_home_value - a.median_home_value)
-          .slice(0, 10);
-        const top10ZipcodesMedianRentValue = zipcodeInfo
-          .filter((zipcode) => zipcode.median_rent_value !== null) // filter out zipcodes with null median home value
-          .sort((a, b) => b.median_rent_value - a.median_rent_value)
-          .slice(0, 10);
-
-        const top10ZipcodesAvgHouseholdIncome = zipcodeInfo
-          .filter((zipcode) => zipcode.average_household_income !== null) // filter out zipcodes with null median home value
-          .sort(
-            (a, b) => b.average_household_income - a.average_household_income
-          )
-          .slice(0, 10);
-        const top10ZipcodesAgeUnder18 = zipcodeInfo
-          .filter((zipcode) => zipcode.age_under_18 !== null) // filter out zipcodes with null median home value
-          .sort((a, b) => b.age_under_18 - a.age_under_18)
-          .slice(0, 10);
-        const top10ZipcodesAgeRange20_34 = zipcodeInfo
-          .filter((zipcode) => zipcode.age_range_20_34 !== null) // filter out zipcodes with null median home value
-          .sort((a, b) => b.age_range_20_34 - a.age_range_20_34)
-          .slice(0, 10);
-
-        const top10ZipcodesAgeRange35_64 = zipcodeInfo
-          .filter((zipcode) => zipcode.age_range_35_64 !== null) // filter out zipcodes with null median home value
-          .sort((a, b) => b.age_range_35_64 - a.age_range_35_64)
-          .slice(0, 10);
-        const top10ZipcodesAgeOver65 = zipcodeInfo
-          .filter((zipcode) => zipcode.age_over_65 !== null) // filter out zipcodes with null median home value
-          .sort((a, b) => b.age_over_65 - a.age_over_65)
-          .slice(0, 10);
-        const top10ZipcodesBachelorGradRate = zipcodeInfo
-          .filter((zipcode) => zipcode.bachelor_grad_rate !== null) // filter out zipcodes with null median home value
-          .sort((a, b) => b.bachelor_grad_rate - a.bachelor_grad_rate)
-          .slice(0, 10);
-
-        setTop10Zipcodes([
-          {
-            category: "Median Home Value",
-            data: top10MedianHomeValue,
-            dataKey: "median_home_value",
-          },
-          {
-            category: "Median Rent Value",
-            data: top10ZipcodesMedianRentValue,
-            dataKey: "median_rent_value",
-          },
-          {
-            category: "Average Household Income",
-            data: top10ZipcodesAvgHouseholdIncome,
-            dataKey: "average_household_income",
-          },
-          {
-            category: "Age Under 18",
-            data: top10ZipcodesAgeUnder18,
-            dataKey: "age_under_18",
-          },
-          {
-            category: "Age Range 20-34",
-            data: top10ZipcodesAgeRange20_34,
-            dataKey: "age_range_20_34",
-          },
-          {
-            category: "Age Range 35-64",
-            data: top10ZipcodesAgeRange35_64,
-            dataKey: "age_range_35_64",
-          },
-          {
-            category: "Age Over 65",
-            data: top10ZipcodesAgeOver65,
-            dataKey: "age_over_65",
-          },
-          {
-            category: "Bachelor Grad Rate",
-            data: top10ZipcodesBachelorGradRate,
-            dataKey: "bachelor_grad_rate",
-          },
-        ]);
 
         setZipcodeInfo(zipcodeInfo);
       });
@@ -472,49 +368,6 @@ export default function ParametersSearchPage() {
               </div>
             </Box>
           </Fade>
-        )}
-        {showResult && top10Zipcodes && (
-          <Box my={5}>
-            {top10Zipcodes.map((categoryData) => (
-              <div key={categoryData.category}>
-                {categoryData.data.length > 0 && (
-                  <>
-                    <Typography variant="h6" align="center" mb={2}>
-                      Top 10 Zipcodes by {categoryData.category}
-                    </Typography>
-                    <Box display="flex" justifyContent="center">
-                      <BarChart
-                        width={800}
-                        height={400}
-                        data={categoryData.data}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="zipcode" />
-                        <YAxis
-                          domain={[
-                            0,
-                            2 *
-                              Math.max(
-                                ...categoryData.data.map(
-                                  (d) => d[categoryData.dataKey]
-                                )
-                              ),
-                          ]}
-                        />
-                        <Tooltip />
-                        <Legend />
-                        <Bar
-                          dataKey={categoryData.dataKey}
-                          fill="#8884d8"
-                          name={categoryData.name}
-                        />
-                      </BarChart>
-                    </Box>
-                  </>
-                )}
-              </div>
-            ))}
-          </Box>
         )}
       </Grid>
     </Fade>

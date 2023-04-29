@@ -134,19 +134,6 @@ export default function ZipcodeSearchPage() {
       ]
     : [];
 
-  const eduData2 = zipcodeInfo
-    ? [
-        {
-          name: "Population with bachelor Degree",
-          value: zipcodeInfo.pop_with_bachelor,
-        },
-        {
-          name: "Population with High School Diploma",
-          value: zipcodeInfo.pop_with_high_school,
-        },
-      ]
-    : [];
-
   const sexData = zipcodeInfo
     ? [
         {
@@ -255,10 +242,7 @@ export default function ZipcodeSearchPage() {
                     {nonNullVal(zipcodeInfo.zipcode)}
                   </Typography>
                   <Typography variant="body1">
-                    {nonNullVal(zipcodeInfo.city)}
-                  </Typography>
-                  <Typography variant="body1">
-                    {nonNullVal(zipcodeInfo.state)}
+                    {nonNullVal(zipcodeInfo.city)}, {nonNullVal(zipcodeInfo.state)}
                   </Typography>
                   <Typography variant="body1">
                     {nonNullVal(zipcodeInfo.country)}
@@ -272,7 +256,7 @@ export default function ZipcodeSearchPage() {
                     {nonNullVal(zipcodeInfo.latitude)}
                   </Typography>
                   <Typography variant="body1" align="right">
-                    {nonNullVal(zipcodeInfo.longitutde)}
+                    {nonNullVal(zipcodeInfo.longitude)}
                   </Typography>
                 </Grid>
               </Grid>
@@ -364,7 +348,6 @@ export default function ZipcodeSearchPage() {
                     angle={-45}
                     textAnchor="end"
                     tick={{ fontSize: 15 }}
-                    // label={{ value: "Housing", position: "bottom", offset: 0 }}
                   />
                   <YAxis />
                   <CartesianGrid strokeDasharray="3 3" />
@@ -400,7 +383,6 @@ export default function ZipcodeSearchPage() {
                     angle={-45}
                     textAnchor="end"
                     tick={{ fontSize: 15 }}
-                    // label={{ value: "Housing", position: "bottom", offset: 0 }}
                   />
                   <YAxis />
                   <CartesianGrid strokeDasharray="3 3" />
@@ -425,7 +407,6 @@ export default function ZipcodeSearchPage() {
               {/* Housing Data */}
 
               {/* Education Demographics */}
-
               <Divider />
               <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
                 Education Demographics
@@ -444,7 +425,6 @@ export default function ZipcodeSearchPage() {
                       angle={-45}
                       textAnchor="end"
                       tick={{ fontSize: 15 }}
-                      // label={{ value: "Race", position: "bottom", offset: 0 }}
                     />
                     <YAxis
                       domain={[0, 100]}
@@ -470,41 +450,6 @@ export default function ZipcodeSearchPage() {
                   </BarChart>
                 </Grid>
               </Box>
-              <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-                <BarChart
-                  width={300 + eduData2.length * 100}
-                  height={800}
-                  data={eduData2}
-                  margin={{ top: 80, right: 30, left: 20, bottom: 150 }}
-                >
-                  <XAxis
-                    dataKey="name"
-                    interval={0}
-                    angle={-45}
-                    textAnchor="end"
-                    tick={{ fontSize: 15 }}
-                    // label={{ value: "Education", position: "bottom", offset: 0 }}
-                  />
-                  <YAxis />
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <Tooltip />
-                  <Legend />
-                  <Bar
-                    dataKey="value"
-                    name="Education"
-                    fill="#8884d8"
-                    barSize={80}
-                  >
-                    {eduData2.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                    <LabelList dataKey="value" position="top" />
-                  </Bar>
-                </BarChart>
-              </Grid>
               {/* Education Demographics */}
 
               {/* Sex Demographics */}
@@ -525,7 +470,6 @@ export default function ZipcodeSearchPage() {
                     angle={-45}
                     textAnchor="end"
                     tick={{ fontSize: 15 }}
-                    // label={{ value: "Race", position: "bottom", offset: 0 }}
                   />
                   <YAxis
                     domain={[0, 100]}
