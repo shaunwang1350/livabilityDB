@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import {Grid, Box, Button, Typography, Divider, Container, TextField, Fade} from '@mui/material';
+import { Grid, Box, Button, Typography, Divider, Fade } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { nonNullVal } from '../helpers/formatter';
-import { bgimg } from '../images/bkvector.png';
+import bgimg from '../images/bkvector.png';
 import { Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, LabelList } from "recharts";
 const config = require("../config.json");
 
