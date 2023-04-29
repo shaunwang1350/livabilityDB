@@ -490,7 +490,17 @@ export default function ParametersSearchPage() {
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="zipcode" />
-                        <YAxis />
+                        <YAxis
+                          domain={[
+                            0,
+                            2 *
+                              Math.max(
+                                ...categoryData.data.map(
+                                  (d) => d[categoryData.dataKey]
+                                )
+                              ),
+                          ]}
+                        />
                         <Tooltip />
                         <Legend />
                         <Bar

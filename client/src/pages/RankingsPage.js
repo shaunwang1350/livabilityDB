@@ -151,14 +151,19 @@ export default function RankingsPage() {
             <Divider />
             <BarChart
               width={100 + 10 * 100}
-              height={500}
+              height={800}
               data={zipBusinessInfo
                 .sort((a, b) => b.num_business - a.num_business)
                 .slice(0, 10)}
               margin={{ top: 5, right: 30, left: 20, bottom: 55 }}
             >
               <XAxis dataKey="zipcode" />
-              <YAxis />
+              <YAxis
+                domain={[
+                  0,
+                  Math.max(...zipBusinessInfo.map((d) => d.num_business)) * 2,
+                ]}
+              />
               <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
               <Legend />
@@ -174,14 +179,20 @@ export default function RankingsPage() {
             <Divider />
             <BarChart
               width={100 + 10 * 100}
-              height={500}
+              height={800}
               data={zipBusinessInfo
                 .sort((a, b) => b.avg_review_star - a.avg_review_star)
                 .slice(0, 10)}
               margin={{ top: 5, right: 30, left: 20, bottom: 55 }}
             >
               <XAxis dataKey="zipcode" />
-              <YAxis />
+              <YAxis
+                domain={[
+                  0,
+                  Math.max(...zipBusinessInfo.map((d) => d.avg_review_star)) *
+                    2,
+                ]}
+              />
               <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
               <Legend />

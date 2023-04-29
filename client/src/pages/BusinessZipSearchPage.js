@@ -18,6 +18,7 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
+import { scaleLinear } from "d3-scale";
 
 const config = require("../config.json");
 
@@ -54,6 +55,14 @@ export default function BusinessZipSearchPage() {
     { field: "review_stars", headerName: "Review stars", width: 100 },
     { field: "review_count", headerName: "# of Reviews", width: 100 },
   ];
+
+  // Define constant for data to be used in the BarCharts
+  const top10ReviewStarsData = businessInfo
+    ? businessInfo.sort((a, b) => b.review_stars - a.review_stars).slice(0, 10)
+    : [];
+  const top10ReviewCountData = businessInfo
+    ? businessInfo.sort((a, b) => b.review_count - a.review_count).slice(0, 10)
+    : [];
 
   return (
     <Fade in={show}>
@@ -128,10 +137,8 @@ export default function BusinessZipSearchPage() {
             <Divider />
             <BarChart
               width={800}
-              height={600}
-              data={businessInfo
-                .sort((a, b) => b.review_stars - a.review_stars)
-                .slice(0, 10)}
+              height={1000}
+              data={top10ReviewStarsData}
               margin={{ top: 10, right: 30, left: 20, bottom: 100 }}
             >
               <XAxis
@@ -141,7 +148,12 @@ export default function BusinessZipSearchPage() {
                 textAnchor="end"
                 tick={{ fontSize: 10 }}
               />
-              <YAxis />
+              <YAxis
+                domain={[
+                  0,
+                  Math.max(...businessInfo.map((d) => d.review_stars)) * 2,
+                ]}
+              />
               <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
               <Legend />
@@ -151,14 +163,7 @@ export default function BusinessZipSearchPage() {
               Bar chart for 10 top businesses with the most number of review
               count
             </Typography>
-            <BarChart
-              width={800}
-              height={600}
-              data={businessInfo
-                .sort((a, b) => b.review_count - a.review_count)
-                .slice(0, 10)}
-              margin={{ top: 10, right: 30, left: 20, bottom: 100 }}
-            >
+            <BarChart width={800} height={1000} data={top10ReviewCountData}>
               <XAxis
                 dataKey="name"
                 interval={0}
@@ -166,7 +171,12 @@ export default function BusinessZipSearchPage() {
                 textAnchor="end"
                 tick={{ fontSize: 10 }}
               />
-              <YAxis />
+              <YAxis
+                domain={[
+                  0,
+                  Math.max(...businessInfo.map((d) => d.review_count)) * 2,
+                ]}
+              />{" "}
               <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
               <Legend />
