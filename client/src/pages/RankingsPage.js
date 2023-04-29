@@ -161,7 +161,10 @@ export default function RankingsPage() {
               <YAxis
                 domain={[
                   0,
-                  Math.max(...zipBusinessInfo.map((d) => d.num_business)) * 2,
+                  Math.ceil(
+                    Math.max(...zipBusinessInfo.map((d) => d.num_business)) *
+                      1.5
+                  ),
                 ]}
               />
               <CartesianGrid strokeDasharray="3 3" />
@@ -171,35 +174,6 @@ export default function RankingsPage() {
                 dataKey="num_business"
                 name="Number of Businesses"
                 fill="#8884d8"
-              />
-            </BarChart>
-            <Typography variant="h5" fontWeight={800} mb={2}>
-              Bar chart for top 10 Zipcodes with the most number of Star Reviews
-            </Typography>
-            <Divider />
-            <BarChart
-              width={100 + 10 * 100}
-              height={800}
-              data={zipBusinessInfo
-                .sort((a, b) => b.avg_review_star - a.avg_review_star)
-                .slice(0, 10)}
-              margin={{ top: 5, right: 30, left: 20, bottom: 55 }}
-            >
-              <XAxis dataKey="zipcode" />
-              <YAxis
-                domain={[
-                  0,
-                  Math.max(...zipBusinessInfo.map((d) => d.avg_review_star)) *
-                    2,
-                ]}
-              />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Legend />
-              <Bar
-                dataKey="avg_review_star"
-                name="Average Star Reviews"
-                fill="#82ca9d"
               />
             </BarChart>
           </Box>

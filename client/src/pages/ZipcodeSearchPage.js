@@ -242,7 +242,8 @@ export default function ZipcodeSearchPage() {
                     {nonNullVal(zipcodeInfo.zipcode)}
                   </Typography>
                   <Typography variant="body1">
-                    {nonNullVal(zipcodeInfo.city)}, {nonNullVal(zipcodeInfo.state)}
+                    {nonNullVal(zipcodeInfo.city)},{" "}
+                    {nonNullVal(zipcodeInfo.state)}
                   </Typography>
                   <Typography variant="body1">
                     {nonNullVal(zipcodeInfo.country)}
@@ -349,7 +350,14 @@ export default function ZipcodeSearchPage() {
                     textAnchor="end"
                     tick={{ fontSize: 15 }}
                   />
-                  <YAxis />
+                  <YAxis
+                    domain={[
+                      0,
+                      Math.ceil(
+                        Math.max(...housingData1.map((d) => d.value)) * 1.5
+                      ),
+                    ]}
+                  />
                   <CartesianGrid strokeDasharray="3 3" />
                   <Tooltip />
                   <Legend />
@@ -384,9 +392,18 @@ export default function ZipcodeSearchPage() {
                     textAnchor="end"
                     tick={{ fontSize: 15 }}
                   />
-                  <YAxis />
+                  <YAxis
+                    domain={[
+                      0,
+                      Math.ceil(
+                        Math.max(...housingData2.map((d) => d.value)) * 1.5
+                      ),
+                    ]}
+                  />{" "}
                   <CartesianGrid strokeDasharray="3 3" />
-                  <Tooltip />
+                  <Tooltip
+                  //formatter={(value, name) => [`${name}: ${value}`, ""]}
+                  />
                   <Legend />
                   <Bar
                     dataKey="value"
@@ -429,15 +446,18 @@ export default function ZipcodeSearchPage() {
                     <YAxis
                       domain={[0, 100]}
                       tickFormatter={(tick) => `${tick}%`}
-                    />{" "}
+                    />
                     <CartesianGrid strokeDasharray="3 3" />
-                    <Tooltip />
+                    <Tooltip
+                    //labelFormatter={(value) => eduData[value].name}
+                    />
                     <Legend />
                     <Bar
                       dataKey="value"
                       name="Education"
                       fill="#8884d8"
                       barSize={80}
+                      //label={({ name }) => name} // <-- set label to the name property
                     >
                       {eduData.map((entry, index) => (
                         <Cell

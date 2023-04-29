@@ -132,35 +132,6 @@ export default function BusinessZipSearchPage() {
           >
             <Typography variant="h5" fontWeight={800} mb={2}>
               Bar chart for 10 top businesses with the most number of review
-              stars
-            </Typography>
-            <Divider />
-            <BarChart
-              width={800}
-              height={1000}
-              data={top10ReviewStarsData}
-              margin={{ top: 10, right: 30, left: 20, bottom: 100 }}
-            >
-              <XAxis
-                dataKey="name"
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                tick={{ fontSize: 10 }}
-              />
-              <YAxis
-                domain={[
-                  0,
-                  Math.max(...businessInfo.map((d) => d.review_stars)) * 2,
-                ]}
-              />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="review_stars" name="Review Stars" fill="#8884d8" />
-            </BarChart>
-            <Typography variant="h5" fontWeight={800} mb={2}>
-              Bar chart for 10 top businesses with the most number of review
               count
             </Typography>
             <BarChart width={800} height={1000} data={top10ReviewCountData}>
@@ -174,7 +145,9 @@ export default function BusinessZipSearchPage() {
               <YAxis
                 domain={[
                   0,
-                  Math.max(...businessInfo.map((d) => d.review_count)) * 2,
+                  Math.ceil(
+                    Math.max(...businessInfo.map((d) => d.review_count)) * 1.5
+                  ),
                 ]}
               />{" "}
               <CartesianGrid strokeDasharray="3 3" />
