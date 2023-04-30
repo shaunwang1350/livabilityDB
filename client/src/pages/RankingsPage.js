@@ -161,10 +161,7 @@ export default function RankingsPage() {
               <YAxis
                 domain={[
                   0,
-                  Math.ceil(
-                    Math.max(...zipBusinessInfo.map((d) => d.num_business)) *
-                      1.5
-                  ),
+                  Math.ceil(Math.max(...zipBusinessInfo.map((d) => d.num_business)) * 1.1),
                 ]}
               />
               <CartesianGrid strokeDasharray="3 3" />

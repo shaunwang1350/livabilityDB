@@ -151,7 +151,7 @@ export default function HomePage() {
           value: stats.avg_us_vietnamese_percentage,
         },
         {
-          name: "Two or more/unknown race",
+          name: "2+ or unknown race",
           value: stats.avg_us__or_more_or_unknown_percentage,
         },
       ]
@@ -166,13 +166,7 @@ export default function HomePage() {
   return (
     <Fade in={show}>
       <Grid>
-        <Box
-          m={7}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="70vh"
-        >
+        <Box m={7} display="flex" justifyContent="center" alignItems="center" minHeight="70vh" >
           <Grid container spacing={8}>
             <Grid item xs={12} md={6}>
               <Typography variant="h3" fontWeight={800} mb={4}>
@@ -218,14 +212,7 @@ export default function HomePage() {
           </Grid>
         </Box>
 
-        <Box
-          mt={3}
-          mb={3}
-          ml={5}
-          mr={5}
-          p={5}
-          sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }}
-        >
+        <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }} >
           <Typography variant="h5" fontWeight={800} mb={2}>
             Statistics across all US Zip Codes
           </Typography>
@@ -239,9 +226,29 @@ export default function HomePage() {
               <Typography variant="h3" mb={1}>
                 ${nonNullVal(stats.avg_us_home_value)}
               </Typography>
-              <Typography variant="h6">Average US home value</Typography>
+              <Typography variant="h6">Average US Home Value</Typography>
               <Typography variant="body2" mb={2}>
                 Mean home value across all US zip codes
+              </Typography>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>
+                ${nonNullVal(stats.avg_us_rent_value)}
+              </Typography>
+              <Typography variant="h6">Average US Rent Value</Typography>
+              <Typography variant="body2" mb={2}>
+                Mean rent value across all US zip codes
+              </Typography>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+              <Typography variant="h3" mb={1}>
+                ${nonNullVal(stats.avg_us_household_income)}
+              </Typography>
+              <Typography variant="h6">Average US Household Income</Typography>
+              <Typography variant="body2" mb={2}>
+                Mean household income across all US zip codes
               </Typography>
             </Grid>
 
@@ -250,7 +257,7 @@ export default function HomePage() {
                 {nonNullVal(stats.avg_us_house_occupancy_rate)}
               </Typography>
               <Typography variant="h6">
-                Average US house occupancy rate
+                Average US House Occupancy Rate
               </Typography>
               <Typography variant="body2" mb={2}>
                 Mean house occupancy rate across all US zip codes
@@ -259,20 +266,10 @@ export default function HomePage() {
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>
-                ${nonNullVal(stats.avg_us_household_income)}
-              </Typography>
-              <Typography variant="h6">Average US household income</Typography>
-              <Typography variant="body2" mb={2}>
-                Mean household income across all US zip codes
-              </Typography>
-            </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>
                 {nonNullVal(stats.avg_us_owner_occupancy_rate)}
               </Typography>
               <Typography variant="h6">
-                Average US owner occupancy rate
+                Average US Owner Occupancy Rate
               </Typography>
               <Typography variant="body2" mb={2}>
                 Mean owner occupancy rate across all US zip codes
@@ -284,33 +281,16 @@ export default function HomePage() {
                 {nonNullVal(stats.avg_us_renter_occupancy_rate)}
               </Typography>
               <Typography variant="h6">
-                Average US renter occupancy rate
+                Average US Renter Occupancy Rate
               </Typography>
               <Typography variant="body2" mb={2}>
                 Mean renter occupancy rate across all US zip codes
               </Typography>
             </Grid>
-
-            <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>
-                ${nonNullVal(stats.avg_us_rent_value)}
-              </Typography>
-              <Typography variant="h6">Average US rent value</Typography>
-              <Typography variant="body2" mb={2}>
-                Mean rent value across all US zip codes
-              </Typography>
-            </Grid>
           </Grid>
         </Box>
 
-        <Box
-          mt={3}
-          mb={3}
-          ml={5}
-          mr={5}
-          p={5}
-          sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }}
-        >
+        <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }} >
           {/* Education Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
@@ -329,7 +309,6 @@ export default function HomePage() {
                 angle={-45}
                 textAnchor="end"
                 tick={{ fontSize: 15 }}
-                // label={{ value: "Education", position: "bottom", offset: 0 }}
               />
               <YAxis
                 domain={[0, 1]}
@@ -357,6 +336,7 @@ export default function HomePage() {
             </BarChart>
           </Grid>
           {/* Education Demographics */}
+
           {/* Race Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
@@ -375,7 +355,6 @@ export default function HomePage() {
                 angle={-45}
                 textAnchor="end"
                 tick={{ fontSize: 15 }}
-                // label={{ value: "Race", position: "bottom", offset: 0 }}
               />
               <YAxis
                 domain={[0, 1]}
@@ -423,7 +402,6 @@ export default function HomePage() {
                   angle={-45}
                   textAnchor="end"
                   tick={{ fontSize: 15 }}
-                  // label={{ value: "Age", position: "bottom", offset: 0 }}
                 />
                 <YAxis
                   domain={[0, 1]}

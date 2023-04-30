@@ -18,7 +18,6 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
-import { scaleLinear } from "d3-scale";
 
 const config = require("../config.json");
 
@@ -146,7 +145,7 @@ export default function BusinessZipSearchPage() {
                 domain={[
                   0,
                   Math.ceil(
-                    Math.max(...businessInfo.map((d) => d.review_count)) * 1.5
+                    Math.max(...businessInfo.map((d) => d.review_count)) * 1.1
                   ),
                 ]}
               />{" "}

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Modal, Box, Typography, Grid, Divider, Button } from "@mui/material";
 import { nonNullVal } from "../helpers/formatter";
-import { Container, TextField, Fade } from "@mui/material";
 import {
   PieChart,
   Pie,
@@ -23,17 +22,17 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
 
   const housingData1 = zipcodeInfo
     ? [
-        { name: "Total house units", value: zipcodeInfo.total_house_units },
+        { name: "Total House Units", value: zipcodeInfo.total_house_units },
         {
-          name: "Occupied house units",
+          name: "Occupied House Units",
           value: zipcodeInfo.occupied_house_units,
         },
         {
-          name: "Owner occupied units",
+          name: "Owner Occupied Units",
           value: zipcodeInfo.owner_occupied_units,
         },
         {
-          name: "Renter occupied units",
+          name: "Renter Occupied Units",
           value: zipcodeInfo.renter_occupied_units,
         },
       ]
@@ -42,10 +41,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
   const housingData2 = zipcodeInfo
     ? [
         { name: "Median Home Value", value: zipcodeInfo.median_home_value },
-        {
-          name: "Median Rent value",
-          value: zipcodeInfo.median_home_value,
-        },
+        { name: "Median Rent value", value: zipcodeInfo.median_rent_value },
       ]
     : [];
 
@@ -67,66 +63,55 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
       ]
     : [];
 
-  const raceData = zipcodeInfo
+    const raceData = zipcodeInfo
     ? [
-        { name: "Race white", value: zipcodeInfo.race_white },
-        { name: "Race black", value: zipcodeInfo.race_black },
-        {
-          name: "Race native american",
-          value: zipcodeInfo.race_native_american,
-        },
-        { name: "Race asian", value: zipcodeInfo.race_asian },
-        { name: "Race asian indian", value: zipcodeInfo.race_asian_indian },
-        { name: "Race asian chinese", value: zipcodeInfo.race_asian_chinese },
-        { name: "Race asian japanese", value: zipcodeInfo.race_asian_japanese },
-        { name: "Race asian korean", value: zipcodeInfo.race_asian_korean },
-        {
-          name: "Race asian vietnamese",
-          value: zipcodeInfo.race_asian_vietnamese,
-        },
-        { name: "Race asian filipino", value: zipcodeInfo.race_asian_filipino },
-        {
-          name: "Race asian pacific islander",
-          value: zipcodeInfo.race_asian_pacific_islander,
-        },
-        { name: "Race other", value: zipcodeInfo.race_other },
-        { name: "Hispanic any race", value: zipcodeInfo.hispanic_any_race },
-        {
-          name: "Race two or more or unknown",
-          value: zipcodeInfo.race_two_or_more_or_unknown,
-        },
+        { name: "White", value: zipcodeInfo.race_white },
+        { name: "Black", value: zipcodeInfo.race_black },
+        { name: "Native American", value: zipcodeInfo.race_native_american },
+        { name: "Asian", value: zipcodeInfo.race_asian },
+        { name: "Other", value: zipcodeInfo.race_other },
+        { name: "Hispanic (any race)", value: zipcodeInfo.hispanic_any_race },
+        { name: "2+ or Unknown", value: zipcodeInfo.race_two_or_more_or_unknown },
       ]
     : [];
 
-  const eduData = zipcodeInfo
+    const asianData = zipcodeInfo
+    ? [
+        { name: "Indian", value: zipcodeInfo.race_asian_indian },
+        { name: "Chinese", value: zipcodeInfo.race_asian_chinese },
+        { name: "Japanese", value: zipcodeInfo.race_asian_japanese },
+        { name: "Korean", value: zipcodeInfo.race_asian_korean },
+        { name: "Vietnamese", value: zipcodeInfo.race_asian_vietnamese },
+        { name: "Filipino", value: zipcodeInfo.race_asian_filipino },
+        { name: "Pacific Islander", value: zipcodeInfo.race_asian_pacific_islander },
+      ]
+    : [];
+
+    const eduData = zipcodeInfo
     ? [
         {
-          name: "Average US bachelor grad percantage",
+          name: "Average Bachelor Grad Rate",
           value: zipcodeInfo.bachelor_grad_rate,
         },
         {
-          name: "Average US hs grad percentage",
+          name: "Average High School Grad Rate",
           value: zipcodeInfo.hs_grad_rate,
         },
         {
-          name: "Average US combined bachelor hs percentage",
+          name: "Average Bachelor and High School Grad Rate",
           value: zipcodeInfo.combined_bachelor_hs_rate,
-        },
-        {
-          name: "Labor force participation rate",
-          value: zipcodeInfo.labor_force_participation_rate,
         },
       ]
     : [];
 
-  const sexData = zipcodeInfo
+    const sexData = zipcodeInfo
     ? [
         {
-          name: "Male female sex ratio",
+          name: "Male To 100 Females Ratio",
           value: zipcodeInfo.male_female_sex_ratio,
         },
         {
-          name: "Male female sex ratio over 18",
+          name: "Male to 100 Females Ratio (over 18 years old)",
           value: zipcodeInfo.male_female_sex_ratio_over_18,
         },
       ]
@@ -198,9 +183,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               {nonNullVal(zipcodeInfo.zipcode)}
             </Typography>
             <Typography variant="body1">
-              {nonNullVal(zipcodeInfo.city)}
-            </Typography>
-            <Typography variant="body1">
+              {nonNullVal(zipcodeInfo.city)},{" "}
               {nonNullVal(zipcodeInfo.state)}
             </Typography>
             <Typography variant="body1">
@@ -229,9 +212,19 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
             <Typography variant="h3" mb={1}>
               {nonNullVal(zipcodeInfo.total_population)}
             </Typography>
-            <Typography variant="h6">Total population</Typography>
+            <Typography variant="h6">Total Population</Typography>
             <Typography variant="body2" mb={2}>
               The total population in the zip code
+            </Typography>
+          </Grid>
+
+          <Grid item xs={3} md={2}>
+            <Typography variant="h3" mb={1}>
+              {nonNullVal(zipcodeInfo.labor_force_participation_rate)}
+            </Typography>
+            <Typography variant="h6">Labor Force Participation Rate</Typography>
+            <Typography variant="body2" mb={2}>
+              The labor force participation rate of the workers in the zip code
             </Typography>
           </Grid>
 
@@ -291,7 +284,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Housing
         </Typography>
-        <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+        { housingData1.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
           <BarChart
             width={300 + housingData1.length * 100}
             height={800}
@@ -308,7 +301,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
             <YAxis
               domain={[
                 0,
-                Math.ceil(Math.max(...housingData1.map((d) => d.value)) * 1.5),
+                Math.ceil(Math.max(...housingData1.map((d) => d.value)) * 1.1),
               ]}
             />{" "}
             <CartesianGrid strokeDasharray="3 3" />
@@ -324,9 +317,9 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               <LabelList dataKey="value" position="top" />
             </Bar>
           </BarChart>
-        </Grid>
+        </Grid>}
 
-        <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+        { housingData2.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
           <BarChart
             width={300 + housingData2.length * 100}
             height={800}
@@ -343,7 +336,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
             <YAxis
               domain={[
                 0,
-                Math.ceil(Math.max(...housingData2.map((d) => d.value)) * 1.5),
+                Math.ceil(Math.max(...housingData2.map((d) => d.value)) * 1.1),
               ]}
             />{" "}
             <CartesianGrid strokeDasharray="3 3" />
@@ -359,7 +352,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               <LabelList dataKey="value" position="top" />
             </Bar>
           </BarChart>
-        </Grid>
+        </Grid>}
         {/* Housing Data */}
 
         {/* Education Demographics */}
@@ -367,7 +360,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Education Demographics
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
+        { eduData.length > 0 && <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
             <BarChart
               width={300 + eduData.length * 100}
@@ -384,16 +377,13 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               />
               <YAxis domain={[0, 100]} tickFormatter={(tick) => `${tick}%`} />
               <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip
-              //labelFormatter={(value) => eduData[value].name}
-              />
+              <Tooltip />
               <Legend />
               <Bar
                 dataKey="value"
                 name="Education"
                 fill="#8884d8"
                 barSize={80}
-                //label={({ name }) => name} // <-- set label to the name property
               >
                 {eduData.map((entry, index) => (
                   <Cell
@@ -405,7 +395,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               </Bar>
             </BarChart>
           </Grid>
-        </Box>
+        </Box>}
         {/* Education Demographics */}
 
         {/* Sex Demographics */}
@@ -413,7 +403,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Sex Demographics
         </Typography>
-        <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+        { sexData.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
           <BarChart
             width={300 + eduData.length * 100}
             height={800}
@@ -441,7 +431,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               <LabelList dataKey="value" position="top" />
             </Bar>
           </BarChart>
-        </Grid>
+        </Grid>}
         {/* Sex Demographics */}
 
         {/* Race Demographics */}
@@ -449,7 +439,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Race Demographics
         </Typography>
-        <Grid
+        { raceData.length > 0 && <Grid
           container
           spacing={8}
           sx={{
@@ -484,7 +474,40 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               </PieChart>
             </Box>
           </Grid>
-        </Grid>
+        </Grid>}
+
+        <Divider />
+        <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
+          Breakdown of the Asian Demographics
+        </Typography>
+        { asianData.length > 0 && <Grid container spacing={8} sx={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }} >
+          <Grid item>
+            <Box margin={4}>
+              {" "}
+              {/* Adjust the value 2 to change the margin */}
+              <PieChart width={700} height={700}>
+                <Tooltip />
+                <Pie
+                  data={asianData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={300}
+                  fill="#8884d8"
+                  label
+                >
+                  {asianData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </Box>
+          </Grid>
+        </Grid>}
         {/* Race Demographics */}
 
         {/* Age Demographics */}
@@ -492,7 +515,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Age Demographics
         </Typography>
-        <Grid
+        { ageData.length > 0 && <Grid
           container
           spacing={8}
           sx={{
@@ -527,7 +550,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               </PieChart>
             </Box>
           </Grid>
-        </Grid>
+        </Grid>}
         {/* Age Demographics */}
       </Box>
     </Modal>
