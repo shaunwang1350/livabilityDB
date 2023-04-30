@@ -288,7 +288,7 @@ export default function HomePage() {
           {/* Education Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
-            Education Demographics accross all Zipcodes
+            Education Demographics across all Zipcodes
           </Typography>
           <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1} mb={0} alignItems="center" justifyContent="center">
             <BarChart

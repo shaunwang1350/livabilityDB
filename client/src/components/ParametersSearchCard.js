@@ -338,7 +338,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
                       Value of homes
                   </Typography>
                   <Typography variant="body2" mb={2}>
-                    This bar char compares the value of rental units to that of home values.
+                    This bar chart compares the value of rental units to that of home values.
                   </Typography>
                 </Grid>
                 <BarChart
@@ -429,7 +429,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         { sexData.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
                         <Grid item xs={6} md={6}>
                   <Typography variant="body2" mb={2}>
-                    This bar char compares the distribution of male to female within the zipcode.
+                    This bar chart compares the distribution of male to female within the zipcode.
                   </Typography>
                 </Grid>
                 <BarChart

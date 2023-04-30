@@ -15,10 +15,8 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
-  CartesianGrid,
 } from "recharts";
-import { isInvalidZipCodeInput } from "../helpers/formatter";
+import { isInvalidZipCodeInput,  dataSort} from "../helpers/formatter";
 const config = require("../config.json");
 
 export default function BusinessZipSearchPage() {
@@ -64,7 +62,7 @@ export default function BusinessZipSearchPage() {
 
   // Define constant for data to be used in the BarCharts
   const top10ReviewCountData = businessInfo
-    ? businessInfo.sort((a, b) => b.review_count - a.review_count).slice(0, 10)
+    ? dataSort(businessInfo)
     : [];
 
   return (

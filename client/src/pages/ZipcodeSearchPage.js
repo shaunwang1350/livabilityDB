@@ -311,7 +311,7 @@ export default function ZipcodeSearchPage() {
 
                 <Grid item xs={6} md={6}>
                   <Typography variant="h3" mb={1}>
-                    {nonNullVal(zipcodeInfo.average_household_income)}
+                    ${nonNullVal(zipcodeInfo.average_household_income)}
                   </Typography>
                   <Typography variant="h6">Average Household Income</Typography>
                   <Typography variant="body2" mb={2}>
