@@ -148,10 +148,9 @@ export default function RankingsPage() {
             <Typography variant="h5" fontWeight={800} mb={2}>
               Bar chart for top 10 Zipcodes with the most number of businesses
             </Typography>
-            <Divider />
             <BarChart
               width={100 + 10 * 100}
-              height={800}
+              height={400}
               data={zipBusinessInfo
                 .sort((a, b) => b.num_business - a.num_business)
                 .slice(0, 10)}
@@ -164,9 +163,7 @@ export default function RankingsPage() {
                   Math.ceil(Math.max(...zipBusinessInfo.map((d) => d.num_business)) * 1.1),
                 ]}
               />
-              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
-              <Legend />
               <Bar
                 dataKey="num_business"
                 name="Number of Businesses"

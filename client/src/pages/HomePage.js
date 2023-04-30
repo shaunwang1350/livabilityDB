@@ -3,6 +3,7 @@ import { Grid, Box, Button, Typography, Divider, Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { nonNullVal } from "../helpers/formatter";
 import bgimg from "../images/bkvector.png";
+
 import {
   Cell,
   BarChart,
@@ -14,7 +15,6 @@ import {
   CartesianGrid,
   LabelList,
 } from "recharts";
-import { PieChart, Pie } from "recharts";
 
 const config = require("../config.json");
 
@@ -206,7 +206,7 @@ export default function HomePage() {
                 src={bgimg}
                 alt="My Team"
                 width="650"
-                sx={{ "border-radius": "2%" }}
+                sx={{ "border-radius": "5%" }}
               />
             </Grid>
           </Grid>
@@ -254,7 +254,7 @@ export default function HomePage() {
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>
-                {nonNullVal(stats.avg_us_house_occupancy_rate)}
+                {nonNullVal(stats.avg_us_house_occupancy_rate)}%
               </Typography>
               <Typography variant="h6">
                 Average US House Occupancy Rate
@@ -266,7 +266,7 @@ export default function HomePage() {
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>
-                {nonNullVal(stats.avg_us_owner_occupancy_rate)}
+                {nonNullVal(stats.avg_us_owner_occupancy_rate)}%
               </Typography>
               <Typography variant="h6">
                 Average US Owner Occupancy Rate
@@ -278,7 +278,7 @@ export default function HomePage() {
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>
-                {nonNullVal(stats.avg_us_renter_occupancy_rate)}
+                {nonNullVal(stats.avg_us_renter_occupancy_rate)}%
               </Typography>
               <Typography variant="h6">
                 Average US Renter Occupancy Rate
@@ -290,36 +290,31 @@ export default function HomePage() {
           </Grid>
         </Box>
 
-        <Box mt={3} mb={3} ml={5} mr={5} p={5} sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }} >
+        <Box mt={3} mb={0} ml={5} mr={5} p={5} sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }} >
           {/* Education Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
             Education Demographics accross all Zipcodes
           </Typography>
-          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+          <Grid sx={{ flexGrow: 1 }} container spacing={2} mt={1} mb={0} alignItems="center" justifyContent="center">
             <BarChart
-              width={400 + eduData.length * 100}
-              height={1000}
+              width={1200 + eduData.length * 100}
+              height={400}
               data={eduData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 180 }}
+              margin={{ top: 5, right: 30, left: 20, bottom: 10 }}
             >
               <XAxis
                 dataKey="name"
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                tick={{ fontSize: 15 }}
+                tick={{ fontSize: 9 }}
               />
               <YAxis
                 domain={[0, 1]}
                 tickFormatter={(tick) => `${(tick * 100).toFixed(2)}%`}
               />{" "}
-              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip
                 formatter={(value) => `${(value * 100).toFixed(2)}%`}
                 labelFormatter={(label) => `${(label * 100).toFixed(0)}%`}
               />{" "}
-              <Legend />
               <Bar dataKey="value" name="Education" fill="#8884d8" barSize={80}>
                 {eduData.map((entry, index) => (
                   <Cell
@@ -334,38 +329,52 @@ export default function HomePage() {
                 />
               </Bar>
             </BarChart>
-          </Grid>
-          {/* Education Demographics */}
+            <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2} ml={2}>
+            <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_bachelor_grad_percentage)}%</Typography>
+            <Typography variant="h6">Average US bachelor grad percentage</Typography>
+            <Typography variant="body2" mb={2}>Mean bachelor’s degree grad percentage across all US zip codes</Typography>
+            </Grid>
 
+            <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_hs_grad_percentage)}%</Typography>
+            <Typography variant="h6">Average US hs grad percentage</Typography>
+            <Typography variant="body2" mb={2}>Mean high school grad percentage across all US zip codes</Typography>
+            </Grid>
+
+            <Grid item xs={6} md={6}>
+            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_combined_bachelor_hs_percentage)}%</Typography>
+            <Typography variant="h6">Average US combined bachelor hs percentage</Typography>
+            <Typography variant="body2" mb={2}>Average US combined bachelor percentage across all US zip codes</Typography>
+            </Grid>
+          </Grid>
+          </Grid>
           {/* Race Demographics */}
+          </Box>
+          <Box mt={3} mb={0} ml={5} mr={5} p={5} sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }} >
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
-            Race Demographics accross all Zipcodes
+            Race Demographics across all Zipcodes
           </Typography>
-          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+          <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2} mt={2}>
             <BarChart
-              width={400 + raceData.length * 100}
-              height={800}
+              width={100 + raceData.length * 100}
+              height={300}
               data={raceData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 100 }}
+              margin={{ top: 5, right: 30, left: 20, bottom: 10 }}
             >
               <XAxis
                 dataKey="name"
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                tick={{ fontSize: 15 }}
+                tick={{ fontSize: 9 }}
               />
               <YAxis
                 domain={[0, 1]}
                 tickFormatter={(tick) => `${(tick * 100).toFixed(0)}%`}
               />{" "}
-              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip
                 formatter={(value) => `${(value * 100).toFixed(2)}%`}
                 labelFormatter={(label) => `${(label * 100).toFixed(0)}%`}
               />{" "}
-              <Legend />
               <Bar dataKey="value" name="Race" fill="#8884d8" barSize={80}>
                 {raceData.map((entry, index) => (
                   <Cell
@@ -381,38 +390,34 @@ export default function HomePage() {
               </Bar>
             </BarChart>
           </Grid>
-          {/* Race Demographics */}
+          </Box>
+          <Box mt={3} mb={0} ml={5} mr={5} p={5} sx={{ background: "black", borderRadius: "16px", boxShadow: 24 }} >
 
           {/* Age  Demographics */}
           <Divider />
           <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
-            Age Demographics accross all Zipcodes
+            Age Demographics across all Zipcodes
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Grid container spacing={2} mb={2}>
+            <Grid container spacing={2} mb={2} mt={1}>
               <BarChart
-                width={400 + ageData.length * 100}
-                height={800}
+                width={1100 + ageData.length * 100}
+                height={300}
                 data={ageData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 150 }}
+                margin={{ top: 5, right: 30, left: 20, bottom: 10 }}
               >
                 <XAxis
                   dataKey="name"
-                  interval={0}
-                  angle={-45}
-                  textAnchor="end"
-                  tick={{ fontSize: 15 }}
+                  tick={{ fontSize: 9}}
                 />
                 <YAxis
                   domain={[0, 1]}
                   tickFormatter={(tick) => `${(tick * 100).toFixed(0)}%`}
                 />
-                <CartesianGrid strokeDasharray="3 3" />
                 <Tooltip
                   formatter={(value) => `${(value * 100).toFixed(2)}%`}
                   labelFormatter={(label) => `${(label * 100).toFixed(2)}%`}
                 />{" "}
-                <Legend />
                 <Bar
                   dataKey="value"
                   name="Education"
