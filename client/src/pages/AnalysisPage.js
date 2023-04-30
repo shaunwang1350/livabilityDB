@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Container, TextField, Box, Button, Typography, Divider, Autocomplete, 
   Grid, Slider, Switch, InputLabel, Select, MenuItem, FormControl, Fade} from '@mui/material';
-import { roundDecimals, formatBoolean, formatScore, nonNullVal, calcCombinedScore } from '../helpers/formatter';
+import { isInvalidZipCodeInput, isInvalidBusinessCategory, roundDecimals, formatBoolean, formatScore, 
+  nonNullVal, calcCombinedScore } from '../helpers/formatter';
 const config = require('../config.json');
 
 export default function AnalysisPage() {
@@ -12,8 +13,11 @@ export default function AnalysisPage() {
   }, []);
 
   const [allCategories, setAllCategories] = useState([]);
+
   const [showResult, setShowResult] = useState(false);
   const [showResultSecond, setShowResultSecond] = useState(false);
+  const [invalidZipCodeInput, setInvalidZipCodeInput] = useState(false);
+  const [invalidBusinessCategory, setInvalidBusinessCategory] = useState(false);
 
   const [zipcode, setZipcode] = useState(null);
   const [category, setCategory] = useState();
@@ -46,6 +50,15 @@ export default function AnalysisPage() {
   const [hedScoreInfo, setHedScoreInfo] = useState(null);
 
   const businessScore = () => {
+    const invalidZC = isInvalidZipCodeInput(zipcode)
+    const invalidBC = isInvalidBusinessCategory(category)
+    setInvalidZipCodeInput(invalidZC);
+    setInvalidBusinessCategory(invalidBC);
+
+    if (invalidZC || invalidBC) {
+      return;
+    }
+
     fetch(`http://${config.server_host}:${config.server_port}/business_score/${zipcode}/${category}` +
     `?review_weight=${reviewWeight}&count_weight=${countWeight}`)
       .then(res => res.json())
@@ -58,6 +71,15 @@ export default function AnalysisPage() {
   };
 
   const housingEconomicsDemographicsScore = () => {
+    const invalidZC = isInvalidZipCodeInput(zipcode)
+    const invalidBC = isInvalidBusinessCategory(category)
+    setInvalidZipCodeInput(invalidZC);
+    setInvalidBusinessCategory(invalidBC);
+
+    if (invalidZC || invalidBC) {
+      return;
+    }
+
     fetch(`http://${config.server_host}:${config.server_port}/housing_economics_demographics_Score/${zipcode}` +
     `?home_weight=${homeWeight}&rent_weight=${rentWeight}&home_value_high=${homeValueHigh}&rent_value_high=${rentValueHigh}` +
     `&lf_rate_weight=${lFRateWeight}&household_income_weight=${householdIncomeWeight}&poverty_rate_weight=${povertyRateWeight}` +
@@ -94,6 +116,7 @@ export default function AnalysisPage() {
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={5}>
           <Box sx={{ width: 400 }} pl={6}>
             <TextField id="outlined-basic" label="Zipcode" variant="outlined" required inputProps={{maxLength: 5}} onChange={(e) => setZipcode(e.target.value)}/>
+            {invalidZipCodeInput && <Box><Typography variant="p" fontWeight={100} mb={2} mt={2}>Missing/Invalid Input for Zip Code</Typography></Box>}
           </Box>
           <Box sx={{ width: 400 }} pl={28}>
             <Autocomplete
@@ -107,7 +130,8 @@ export default function AnalysisPage() {
               sx={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Business Categories"/>}
             />
-            </Box>
+            {invalidBusinessCategory && <Box><Typography variant="p" fontWeight={100} mb={2} mt={2}>Missing Input for Business Category</Typography></Box>}
+          </Box>
         </Grid>
 
         <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>

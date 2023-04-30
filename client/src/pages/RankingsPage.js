@@ -19,6 +19,7 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
+import { isInvalidBusinessCategory } from "../helpers/formatter";
 const config = require("../config.json");
 
 export default function RankingsPage() {
@@ -28,7 +29,9 @@ export default function RankingsPage() {
   }, []);
 
   const [allCategories, setAllCategories] = useState([]);
+
   const [showResult, setShowResult] = useState(false);
+  const [invalidInput, setInvalidInput] = useState(false);
 
   const [category, setCategory] = useState();
   const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
@@ -55,6 +58,13 @@ export default function RankingsPage() {
   ];
 
   const searchTopBusinessZipcode = () => {
+    const invalidBC = isInvalidBusinessCategory(category);
+    setInvalidInput(invalidBC);
+    
+    if (invalidBC) {
+      return;
+    }
+
     console.log(category);
     fetch(
       `http://${config.server_host}:${config.server_port}/top_business_zipcode/${category}`
@@ -67,6 +77,7 @@ export default function RankingsPage() {
         }));
         setZipBusinessInfo(zipBusinessInfo);
       });
+    
     setShowResult(true);
     console.log(zipBusinessInfo);
   };
@@ -101,6 +112,7 @@ export default function RankingsPage() {
               <TextField {...params} label="Business Categories" />
             )}
           />
+          {invalidInput && <Box><Typography variant="p" fontWeight={100} mb={2} mt={2}>Missing Input for Business Category</Typography></Box>}
 
           <Box
             m={1}

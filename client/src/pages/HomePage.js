@@ -54,10 +54,6 @@ export default function HomePage() {
     "#87CEFA",
   ];
 
-  const multiplyAndRound = (num) => {
-    return parseFloat((num * 100).toFixed(2));
-  };
-
   const eduData = stats
     ? [
         {

@@ -22,7 +22,8 @@ import {
   CartesianGrid,
   LabelList,
 } from "recharts";
-import { nonNullVal, asianDataCheck } from "../helpers/formatter";
+
+import { isInvalidZipCodeInput, nonNullVal, asianDataCheck } from "../helpers/formatter";
 const config = require("../config.json");
 
 export default function ZipcodeSearchPage() {
@@ -32,6 +33,7 @@ export default function ZipcodeSearchPage() {
   }, []);
 
   const [showResult, setShowResult] = useState(false);
+  const [invalidInput, setInvalidInput] = useState(false);
 
   const [zipcode, setZipcode] = useState(null);
   const [zipcodeInfo, setZipcodeInfo] = useState(null);
@@ -163,6 +165,13 @@ export default function ZipcodeSearchPage() {
   ];
 
   const zipcodeSearchRoute = () => {
+    const invalidZC = isInvalidZipCodeInput(zipcode);
+    setInvalidInput(invalidZC);
+    
+    if (invalidZC) {
+      return;
+    }
+
     fetch(
       `http://${config.server_host}:${config.server_port}/zipcode/${zipcode}`
     )
@@ -199,6 +208,7 @@ export default function ZipcodeSearchPage() {
             inputProps={{ maxLength: 5 }}
             onChange={(e) => setZipcode(e.target.value)}
           />
+          {invalidInput && <Box><Typography variant="p" fontWeight={100} mb={2} mt={2}>Missing/Invalid Input for Zip Code</Typography></Box>}
 
           <Box
             m={1}
