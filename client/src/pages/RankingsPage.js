@@ -17,7 +17,7 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import { isInvalidBusinessCategory } from "../helpers/formatter";
+import { isInvalidBusinessCategory, dataSort } from "../helpers/formatter";
 const config = require("../config.json");
 
 export default function RankingsPage() {
@@ -33,11 +33,6 @@ export default function RankingsPage() {
 
   const [category, setCategory] = useState();
   const [zipBusinessInfo, setZipBusinessInfo] = useState(null);
-
-  const zipBusinessInfoSort = (zipBusinessInfo) => {
-    const temp = [...zipBusinessInfo];
-    return temp.sort((a, b) => b.num_business - a.num_business).slice(0, 10);
-  }
 
   const defaultProps = {
     options: allCategories,
@@ -166,7 +161,7 @@ export default function RankingsPage() {
             <BarChart
               width={100 + 10 * 100}
               height={400}
-              data={zipBusinessInfoSort(zipBusinessInfo)}
+              data={dataSort(zipBusinessInfo)}
               margin={{ top: 5, right: 30, left: 20, bottom: 55 }}
             >
               <XAxis dataKey="zipcode" />

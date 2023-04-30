@@ -17,6 +17,11 @@ export function asianDataCheck(asianData) {
   return false;
 }
 
+export function dataSort(data) {
+  const temp = [...data];
+  return temp.sort((a, b) => b.num_business - a.num_business).slice(0, 10);
+}
+
 export function nonNullVal(val) {
   return val ?? "N/A";
 }

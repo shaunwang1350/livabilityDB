@@ -474,7 +474,7 @@ export default function AnalysisPage() {
             </Grid>
 
             <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.poverty_rate)}</Typography>
+              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.poverty_rate)}%</Typography>
               <Typography variant="h6">Poverty Rate</Typography>
               <Typography variant="body2" mb={2}>Poverty rate for a zip code</Typography>
             </Grid>
