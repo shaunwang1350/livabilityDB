@@ -390,8 +390,7 @@ export default function AnalysisPage() {
           <Grid sx={{ flexGrow: 1 }} container spacing={6} mb={2}>
             <Grid item xs={6} md={6}>
               <Typography variant="body1">{nonNullVal(hedScoreInfo.zipcode)}</Typography>
-              <Typography variant="body1">{nonNullVal(hedScoreInfo.city)}</Typography>
-              <Typography variant="body1">{nonNullVal(hedScoreInfo.state)}</Typography>
+              <Typography variant="body1">{nonNullVal(hedScoreInfo.city)},{" "}{nonNullVal(hedScoreInfo.state)}</Typography>
             </Grid>
           </Grid>
         

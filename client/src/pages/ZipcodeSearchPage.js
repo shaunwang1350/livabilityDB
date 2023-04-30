@@ -253,13 +253,13 @@ export default function ZipcodeSearchPage() {
                 </Grid>
                 <Grid item xs={6} md={6}>
                   <Typography variant="body1" align="right">
-                    {nonNullVal(zipcodeInfo.timezone)}
+                    Timezone:{" "}{nonNullVal(zipcodeInfo.timezone)}
                   </Typography>
                   <Typography variant="body1" align="right">
-                    {nonNullVal(zipcodeInfo.latitude)}
+                    Latitude:{" "}{nonNullVal(zipcodeInfo.latitude)}
                   </Typography>
                   <Typography variant="body1" align="right">
-                    {nonNullVal(zipcodeInfo.longitude)}
+                    Longitude:{" "}{nonNullVal(zipcodeInfo.longitude)}
                   </Typography>
                 </Grid>
               </Grid>

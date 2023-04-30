@@ -1,5 +1,5 @@
 export function isInvalidZipCodeInput(val) {
-  return val === null || val === undefined || !val.match("^\\d{5}$");
+  return val === null || val === undefined || !String(val).match("^\\d{5}$");
 }
 
 export function isInvalidBusinessCategory(val) {

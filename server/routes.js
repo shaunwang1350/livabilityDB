@@ -78,14 +78,12 @@ const search = async function(req, res) {
     SELECT zipcode,
       city,
       state,
-      total_population,
       median_age,
+      median_home_value,
+      median_rent_value,
       combined_bachelor_hs_rate,
       average_household_income,
-      unemployment_rate,
-      median_rent_value,
-      poverty_rate,
-      total_house_units
+      unemployment_rate
     FROM Zipcode
     WHERE (median_home_value < ${medianHomeValueHigh} AND median_home_value > ${medianHomeValueLow}) AND
           (median_rent_value < ${medianRentValueHigh} AND median_rent_value > ${medianRentValueLow}) AND
