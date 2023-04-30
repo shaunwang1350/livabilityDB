@@ -248,7 +248,7 @@ export default function HomePage() {
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>
-                {nonNullVal(stats.avg_us_house_occupancy_rate)}%
+                {nonNullVal(stats.avg_us_house_occupancy_rate)}
               </Typography>
               <Typography variant="h6">
                 Average US House Occupancy Rate
@@ -260,7 +260,7 @@ export default function HomePage() {
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>
-                {nonNullVal(stats.avg_us_owner_occupancy_rate)}%
+                {nonNullVal(stats.avg_us_owner_occupancy_rate)}
               </Typography>
               <Typography variant="h6">
                 Average US Owner Occupancy Rate
@@ -272,7 +272,7 @@ export default function HomePage() {
 
             <Grid item xs={6} md={6}>
               <Typography variant="h3" mb={1}>
-                {nonNullVal(stats.avg_us_renter_occupancy_rate)}%
+                {nonNullVal(stats.avg_us_renter_occupancy_rate)}
               </Typography>
               <Typography variant="h6">
                 Average US Renter Occupancy Rate
