@@ -7,9 +7,7 @@ export function isInvalidBusinessCategory(val) {
 }
 
 export function asianDataCheck(asianData) {
-  console.log("asianData log:" + asianData);
   for (var i = 0; i < asianData.length; i++) {
-    console.log("asianCat log:" + asianData[i].value);
     if (asianData[i].value !== null && asianData[i].value !== undefined && asianData[i].value !== 0) {
       return true; 
     }

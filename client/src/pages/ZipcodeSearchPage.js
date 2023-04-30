@@ -581,7 +581,6 @@ export default function ZipcodeSearchPage() {
               </Grid>
 
               {asianDataCheck(asianData) && <Grid>
-                {console.log(asianDataCheck(asianData))}
               <Divider />
               <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
                 Breakdown of the Asian Demographics
