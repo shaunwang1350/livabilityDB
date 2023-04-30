@@ -9,6 +9,14 @@ export function formatReleaseDate(date) {
   return dateObj.toLocaleString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
+export function isInvalidZipCodeInput(val) {
+  return val === null || val === undefined || !val.match("^\\d{5}$");
+}
+
+export function isInvalidBusinessCategory(val) {
+  return val === null || val === undefined || val === "";
+}
+
 export function nonNullVal(val) {
   return val ?? "N/A";
 }

@@ -14,7 +14,6 @@ import {
   CartesianGrid,
   LabelList,
 } from "recharts";
-import { PieChart, Pie } from "recharts";
 
 const config = require("../config.json");
 
@@ -53,10 +52,6 @@ export default function HomePage() {
     "#DA70D6",
     "#87CEFA",
   ];
-
-  const multiplyAndRound = (num) => {
-    return parseFloat((num * 100).toFixed(2));
-  };
 
   const eduData = stats
     ? [

@@ -18,27 +18,34 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
-
+import { isInvalidZipCodeInput } from "../helpers/formatter";
 const config = require("../config.json");
 
 export default function BusinessZipSearchPage() {
-  const [showResult, setShowResult] = useState(false);
   const [show, setShow] = useState(false);
   useEffect(() => {
     setShow(true);
   }, []);
 
+  const [invalidInput, setInvalidInput] = useState(false);
+
   const [zipcode, setZipcode] = useState([]);
   const [businessInfo, setBusinessInfo] = useState(null);
 
   const businessZipSearchRoute = () => {
+    const invalidZC = isInvalidZipCodeInput(zipcode);
+    setInvalidInput(invalidZC);
+    
+    if (invalidZC) {
+      return;
+    }
+
     fetch(
       `http://${config.server_host}:${config.server_port}/business/${zipcode}`
     )
       .then((res) => res.json())
       .then((resJson) => setBusinessInfo(resJson));
 
-    setShowResult(true);
     console.log(zipcode);
     console.log(businessInfo);
   };
@@ -56,9 +63,6 @@ export default function BusinessZipSearchPage() {
   ];
 
   // Define constant for data to be used in the BarCharts
-  const top10ReviewStarsData = businessInfo
-    ? businessInfo.sort((a, b) => b.review_stars - a.review_stars).slice(0, 10)
-    : [];
   const top10ReviewCountData = businessInfo
     ? businessInfo.sort((a, b) => b.review_count - a.review_count).slice(0, 10)
     : [];
@@ -87,6 +91,7 @@ export default function BusinessZipSearchPage() {
             inputProps={{ maxLength: 5 }}
             onChange={(e) => setZipcode(e.target.value)}
           />
+          {invalidInput && <Box><Typography variant="p" fontWeight={100} mb={2} mt={2}>Missing/Invalid Input for Zip Code</Typography></Box>}
 
           <Box
             m={1}
