@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Modal, Box, Typography, Grid, Divider, Button } from "@mui/material";
-import { nonNullVal } from "../helpers/formatter";
+import { nonNullVal, asianDataCheck } from "../helpers/formatter";
 import {
   PieChart,
   Pie,
@@ -159,7 +159,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, 0%)",
-    width: 1600,
+    width: 1200,
     bgcolor: "background.paper",
     boxShadow: 24,
     p: 4,
@@ -220,7 +220,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
 
           <Grid item xs={3} md={2}>
             <Typography variant="h3" mb={1}>
-              {nonNullVal(zipcodeInfo.labor_force_participation_rate)}
+              {nonNullVal(zipcodeInfo.labor_force_participation_rate)}%
             </Typography>
             <Typography variant="h6">Labor Force Participation Rate</Typography>
             <Typography variant="body2" mb={2}>
@@ -230,7 +230,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
 
           <Grid item xs={3} md={2}>
             <Typography variant="h3" mb={1}>
-              {nonNullVal(zipcodeInfo.poverty_rate)}
+              {nonNullVal(zipcodeInfo.poverty_rate)}%
             </Typography>
             <Typography variant="h6">Poverty Rate</Typography>
             <Typography variant="body2" mb={2}>
@@ -240,7 +240,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
 
           <Grid item xs={3} md={2}>
             <Typography variant="h3" mb={1}>
-              {nonNullVal(zipcodeInfo.unemployment_rate)}
+              {nonNullVal(zipcodeInfo.unemployment_rate)}%
             </Typography>
             <Typography variant="h6">Unemployment Rate</Typography>
             <Typography variant="body2" mb={2}>
@@ -250,7 +250,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
 
           <Grid item xs={3} md={2}>
             <Typography variant="h3" mb={1}>
-              {nonNullVal(zipcodeInfo.average_household_income)}
+              ${nonNullVal(zipcodeInfo.average_household_income)}
             </Typography>
             <Typography variant="h6">Average Household Income</Typography>
             <Typography variant="body2" mb={2}>
@@ -270,7 +270,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
 
           <Grid item xs={3} md={2}>
             <Typography variant="h3" mb={1}>
-              {nonNullVal(zipcodeInfo.rate_of_civilian_with_insurance)}
+              {nonNullVal(zipcodeInfo.rate_of_civilian_with_insurance)}%
             </Typography>
             <Typography variant="h6">Rate of civilian w/ Insurance</Typography>
             <Typography variant="body2" mb={2}>
@@ -280,79 +280,102 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         </Grid>
 
         {/* Housing Data */}
-        <Divider />
-        <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
-          Housing
-        </Typography>
-        { housingData1.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-          <BarChart
-            width={300 + housingData1.length * 100}
-            height={800}
-            data={housingData1}
-            margin={{ top: 5, right: 30, left: 20, bottom: 100 }}
-          >
-            <XAxis
-              dataKey="name"
-              interval={0}
-              angle={-45}
-              textAnchor="end"
-              tick={{ fontSize: 15 }}
-            />
-            <YAxis
-              domain={[
-                0,
-                Math.ceil(Math.max(...housingData1.map((d) => d.value)) * 1.1),
-              ]}
-            />{" "}
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" name="Housing 1" fill="#8884d8" barSize={80}>
-              {housingData1.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-              <LabelList dataKey="value" position="top" />
-            </Bar>
-          </BarChart>
-        </Grid>}
+              <Divider />
+              <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
+                Housing
+              </Typography>
+              { 
+              
+              housingData1.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2} mt={2}>
+                                <Grid item xs={6} md={6}>
+                  <Typography variant="h6">
+                    Total House Units broken down into categories
+                  </Typography>
+                  <Typography variant="body2" mb={2}>
+                    The following barchart inclues the total house units broken down into occupied house units, owner occupied units, and renter occupied units.
+                  </Typography>
+                </Grid>
+                <BarChart
+                  width={700 + housingData1.length * 100}
+                  height={300}
+                  data={housingData1}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 10}}
+                >
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 9 }}
+                  />
+                  <YAxis
+                    domain={[
+                      0,
+                      Math.ceil(
+                        Math.max(...housingData1.map((d) => d.value)) * 1.1
+                      ),
+                    ]}
+                  />
+                  <Tooltip />
+                  <Bar
+                    dataKey="value"
+                    name="Housing 1"
+                    fill="#8884d8"
+                    barSize={80}
+                  >
+                    {housingData1.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                    <LabelList dataKey="value" position="top" />
+                  </Bar>
+                </BarChart>
+              </Grid>}
 
-        { housingData2.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-          <BarChart
-            width={300 + housingData2.length * 100}
-            height={800}
-            data={housingData2}
-            margin={{ top: 5, right: 30, left: 20, bottom: 100 }}
-          >
-            <XAxis
-              dataKey="name"
-              interval={0}
-              angle={-45}
-              textAnchor="end"
-              tick={{ fontSize: 15 }}
-            />
-            <YAxis
-              domain={[
-                0,
-                Math.ceil(Math.max(...housingData2.map((d) => d.value)) * 1.1),
-              ]}
-            />{" "}
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" name="Housing 2" fill="#8884d8" barSize={80}>
-              {housingData2.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-              <LabelList dataKey="value" position="top" />
-            </Bar>
-          </BarChart>
-        </Grid>}
+              { housingData2.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
+                
+              <Grid item xs={6} md={6}>
+                  <Typography variant="h6">
+                      Value of homes
+                  </Typography>
+                  <Typography variant="body2" mb={2}>
+                    This bar char compares the value of rental units to that of home values.
+                  </Typography>
+                </Grid>
+                <BarChart
+                  width={900 + housingData2.length * 100}
+                  height={300}
+                  data={housingData2}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 10 }}
+                >
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 9 }}
+                  />
+                  <YAxis
+                    domain={[
+                      0,
+                      Math.ceil(
+                        Math.max(...housingData2.map((d) => d.value)) * 1.1
+                      ),
+                    ]}
+                  />{" "}
+                  <Tooltip />
+                  <Bar
+                    dataKey="value"
+                    name="Housing 2"
+                    fill="#8884d8"
+                    barSize={80}
+                  >
+                    {housingData2.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                    <LabelList dataKey="value" position="top" />
+                  </Bar>
+                </BarChart>
+              </Grid>}
         {/* Housing Data */}
 
         {/* Education Demographics */}
@@ -362,23 +385,23 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         </Typography>
         { eduData.length > 0 && <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-            <BarChart
-              width={300 + eduData.length * 100}
-              height={800}
-              data={eduData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 200 }}
-            >
+            <Grid item xs={6} md={6}>
+                  <Typography variant="body2" mb={2}>
+                    This bar chart compares the number of HS graduates, bachelor graduates, and its combined score.
+                  </Typography>
+                </Grid>
+                  <BarChart
+                    width={800 + eduData.length * 100}
+                    height={300}
+                    data={eduData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 10 }}
+                  >
               <XAxis
                 dataKey="name"
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                tick={{ fontSize: 15 }}
+                tick={{ fontSize: 9 }}
               />
               <YAxis domain={[0, 100]} tickFormatter={(tick) => `${tick}%`} />
-              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
-              <Legend />
               <Bar
                 dataKey="value"
                 name="Education"
@@ -404,23 +427,23 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
           Sex Demographics
         </Typography>
         { sexData.length > 0 && <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2}>
-          <BarChart
-            width={300 + eduData.length * 100}
-            height={800}
-            data={sexData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 120 }}
-          >
-            <XAxis
-              dataKey="name"
-              interval={0}
-              angle={-45}
-              textAnchor="end"
-              tick={{ fontSize: 15 }}
-            />
+                        <Grid item xs={6} md={6}>
+                  <Typography variant="body2" mb={2}>
+                    This bar char compares the distribution of male to female within the zipcode.
+                  </Typography>
+                </Grid>
+                <BarChart
+                  width={800 + eduData.length * 100}
+                  height={300}
+                  data={sexData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 10 }}
+                >
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 9}}
+                  />
             <YAxis domain={[0, 100]} tickFormatter={(tick) => `${tick}%`} />{" "}
-            <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
-            <Legend />
             <Bar dataKey="value" name="Sex Ratio" fill="#8884d8" barSize={80}>
               {sexData.map((entry, index) => (
                 <Cell
@@ -439,6 +462,11 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Race Demographics
         </Typography>
+                      <Grid item xs={6} md={6}>
+                  <Typography variant="body2" mb={2}>
+                    This pie chart breaks down all of the races into categories.
+                  </Typography>
+                </Grid>
         { raceData.length > 0 && <Grid
           container
           spacing={8}
@@ -452,18 +480,18 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
             <Box margin={4}>
               {" "}
               {/* Adjust the value 2 to change the margin */}
-              <PieChart width={700} height={700}>
-                <Tooltip />
-                <Pie
-                  data={raceData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={300}
-                  fill="#8884d8"
-                  label
-                >
+                    <PieChart width={400} height={400}>
+                      <Tooltip />
+                      <Pie
+                        data={raceData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={150}
+                        fill="#8884d8"
+                        label
+                      >
                   {raceData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
@@ -476,27 +504,33 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
           </Grid>
         </Grid>}
 
+        {asianDataCheck(asianData) && <Grid>
         <Divider />
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Breakdown of the Asian Demographics
         </Typography>
-        { asianData.length > 0 && <Grid container spacing={8} sx={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }} >
+                      <Grid item xs={6} md={6}>
+                  <Typography variant="body2" mb={2}>
+                    This pie chart breaks down the category of asians.
+                  </Typography>
+                </Grid>
+          <Grid container spacing={8} sx={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }} >
           <Grid item>
             <Box margin={4}>
               {" "}
               {/* Adjust the value 2 to change the margin */}
-              <PieChart width={700} height={700}>
-                <Tooltip />
-                <Pie
-                  data={asianData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={300}
-                  fill="#8884d8"
-                  label
-                >
+                    <PieChart width={400} height={400}>
+                      <Tooltip />
+                      <Pie
+                        data={asianData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={150}
+                        fill="#8884d8"
+                        label
+                      >
                   {asianData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
@@ -507,6 +541,7 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
               </PieChart>
             </Box>
           </Grid>
+        </Grid>
         </Grid>}
         {/* Race Demographics */}
 
@@ -515,6 +550,11 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
         <Typography variant="h5" fontWeight={800} mt={2} mb={2}>
           Age Demographics
         </Typography>
+        <Grid item xs={6} md={6}>
+                  <Typography variant="body2" mb={2}>
+                    This pie chart breaksdown all of the age groups within this zipcode.
+                  </Typography>
+                </Grid>
         { ageData.length > 0 && <Grid
           container
           spacing={8}
@@ -528,18 +568,18 @@ export default function ParametersSearchCard({ zipcode, handleClose }) {
             <Box margin={4}>
               {" "}
               {/* Adjust the value 2 to change the margin */}
-              <PieChart width={700} height={700}>
-                <Tooltip />
-                <Pie
-                  data={ageData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={300}
-                  fill="#8884d8"
-                  label
-                >
+                    <PieChart width={500} height={500}>
+                      <Tooltip />
+                      <Pie
+                        data={ageData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={200}
+                        fill="#8884d8"
+                        label
+                      >
                   {ageData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}

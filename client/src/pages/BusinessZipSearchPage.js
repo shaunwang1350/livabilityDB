@@ -138,14 +138,11 @@ export default function BusinessZipSearchPage() {
               Bar chart for 10 top businesses with the most number of review
               count
             </Typography>
-            <BarChart width={800} height={1000} data={top10ReviewCountData}>
-              <XAxis
-                dataKey="name"
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                tick={{ fontSize: 10 }}
-              />
+            <BarChart width={1050} height={400} data={top10ReviewCountData}>
+            <XAxis
+                      dataKey="name"
+                      tick={{ fontSize: 9 }}
+                    />
               <YAxis
                 domain={[
                   0,
@@ -154,9 +151,7 @@ export default function BusinessZipSearchPage() {
                   ),
                 ]}
               />{" "}
-              <CartesianGrid strokeDasharray="3 3" />
               <Tooltip />
-              <Legend />
               <Bar dataKey="review_count" name="Review Count" fill="#82ca9d" />
             </BarChart>
           </Box>

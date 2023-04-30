@@ -463,7 +463,7 @@ export default function AnalysisPage() {
             </Grid>
 
             <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.labor_force_participation_rate)}</Typography>
+              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.labor_force_participation_rate)}%</Typography>
               <Typography variant="h6">Labor Force Participation Rate</Typography>
               <Typography variant="body2" mb={2}>Labor force participation rate for a zip code</Typography>
             </Grid>
@@ -513,13 +513,13 @@ export default function AnalysisPage() {
             </Grid>
 
             <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.education_rate)}</Typography>
+              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.education_rate)}%</Typography>
               <Typography variant="h6">Education Rate</Typography>
               <Typography variant="body2" mb={2}>Education completion rate for a zip code depending on user selection: 1: High School, 2: Bachelor’s, 3: High School and Bachelor’s</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
-              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.age_range_rate)}</Typography>
+              <Typography variant="h3" mb={1}>{nonNullVal(hedScoreInfo.age_range_rate)}%</Typography>
               <Typography variant="h6">Age Range Rate</Typography>
               <Typography variant="body2" mb={2}>Age range percentage for a zip code depending on user selection: 1 - Young: 0-18, 2 - Young Adults: 20-34, 3 - Middle-Aged Adults: 35-64 and 4 - Older People: over 65)</Typography>
             </Grid>
