@@ -325,19 +325,19 @@ export default function HomePage() {
             </BarChart>
             <Grid sx={{ flexGrow: 1 }} container spacing={2} mb={2} ml={2}>
             <Grid item xs={6} md={6}>
-            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_bachelor_grad_percentage)}%</Typography>
+            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_bachelor_grad_percentage)}</Typography>
             <Typography variant="h6">Average US bachelor grad percentage</Typography>
             <Typography variant="body2" mb={2}>Mean bachelor’s degree grad percentage across all US zip codes</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
-            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_hs_grad_percentage)}%</Typography>
+            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_hs_grad_percentage)}</Typography>
             <Typography variant="h6">Average US hs grad percentage</Typography>
             <Typography variant="body2" mb={2}>Mean high school grad percentage across all US zip codes</Typography>
             </Grid>
 
             <Grid item xs={6} md={6}>
-            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_combined_bachelor_hs_percentage)}%</Typography>
+            <Typography variant="h3" mb={1}>{nonNullVal(stats.avg_us_combined_bachelor_hs_percentage)}</Typography>
             <Typography variant="h6">Average US combined bachelor hs percentage</Typography>
             <Typography variant="body2" mb={2}>Average US combined bachelor percentage across all US zip codes</Typography>
             </Grid>
